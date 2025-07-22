@@ -18,79 +18,128 @@ const QueryForm = ({ onSubmit, disabled }) => {
 
   // Example queries for user guidance
   const exampleQueries = [
-    "Analyze the financial health and investment potential of Apple Inc.",
-    "What are the key financial risks for Tesla in 2024?",
-    "Compare the profitability ratios of Microsoft vs Google",
-    "Should I invest in renewable energy stocks right now?",
-    "Analyze the debt-to-equity ratio trends for banking sector"
+    {
+      text: "Analyze the financial health and investment potential of Apple Inc.",
+      company: "AAPL",
+      category: "🍎 Company Analysis"
+    },
+    {
+      text: "What are the key financial risks for Tesla in 2024?",
+      company: "TSLA",
+      category: "⚡ Risk Assessment"
+    },
+    {
+      text: "Compare the profitability ratios of Microsoft vs Google",
+      company: "MSFT vs GOOGL",
+      category: "📊 Comparative Analysis"
+    },
+    {
+      text: "Should I invest in renewable energy stocks right now?",
+      company: "",
+      category: "🌱 Sector Analysis"
+    },
+    {
+      text: "Analyze the debt-to-equity ratio trends for banking sector",
+      company: "",
+      category: "🏦 Industry Metrics"
+    }
   ];
 
   const handleExampleClick = (example) => {
-    setQuery(example);
+    setQuery(example.text);
+    setCompany(example.company);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="query-form">
-      <h2>🔍 Financial Analysis Query</h2>
+    <div className="query-form">
+      <div className="form-header">
+        <h2>
+          <span className="form-icon">🎯</span>
+          Financial Analysis Query
+        </h2>
+        <div className="form-subtitle">
+          Ask our AI agents anything about financial analysis, investments, or market insights
+        </div>
+      </div>
       
-      <div className="form-group">
-        <label htmlFor="company">Company Name (Optional):</label>
-        <input
-          type="text"
-          id="company"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-          placeholder="e.g., Apple, TSLA, Microsoft..."
-          className="form-input"
-          disabled={disabled}
-        />
-      </div>
+      <form onSubmit={handleSubmit} className="query-form-content">
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="company" className="form-label">
+              <span className="label-icon">🏢</span>
+              Company/Symbol
+              <span className="label-optional">(Optional)</span>
+            </label>
+            <input
+              type="text"
+              id="company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              placeholder="e.g., AAPL, Tesla, Microsoft..."
+              className="form-input"
+              disabled={disabled}
+            />
+          </div>
+        </div>
 
-      <div className="form-group">
-        <label htmlFor="query">Financial Analysis Query:</label>
-        <textarea
-          id="query"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Ask me anything about financial analysis, company evaluation, investment recommendations..."
-          className="form-textarea"
-          required
-          disabled={disabled}
-        />
-      </div>
+        <div className="form-group">
+          <label htmlFor="query" className="form-label">
+            <span className="label-icon">💭</span>
+            Your Financial Query
+            <span className="label-required">*</span>
+          </label>
+          <textarea
+            id="query"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Describe what financial analysis or insights you need..."
+            className="form-textarea"
+            required
+            disabled={disabled}
+            rows={4}
+          />
+          <div className="textarea-counter">
+            {query.length} characters
+          </div>
+        </div>
 
-      <div className="form-actions">
-        <button 
-          type="submit" 
-          className="submit-button"
-          disabled={disabled || !query.trim()}
-        >
-          {disabled ? '🤖 Analyzing...' : '🚀 Start Analysis'}
-        </button>
-        
-        <button 
-          type="button" 
-          onClick={handleClear}
-          className="clear-button"
-          disabled={disabled}
-          style={{
-            background: 'transparent',
-            color: '#667eea',
-            border: '2px solid #667eea',
-            marginLeft: '1rem',
-            padding: '1rem 2rem',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontWeight: '600'
-          }}
-        >
-          Clear
-        </button>
-      </div>
+        <div className="form-actions">
+          <button 
+            type="submit" 
+            className="submit-button primary"
+            disabled={disabled || !query.trim()}
+          >
+            {disabled ? (
+              <>
+                <span className="button-spinner"></span>
+                AI Agents Analyzing...
+              </>
+            ) : (
+              <>
+                <span className="button-icon">🚀</span>
+                Start Analysis
+              </>
+            )}
+          </button>
+          
+          <button 
+            type="button" 
+            onClick={handleClear}
+            className="submit-button secondary"
+            disabled={disabled}
+          >
+            <span className="button-icon">🗑️</span>
+            Clear
+          </button>
+        </div>
+      </form>
 
       <div className="example-queries">
-        <h4>💡 Example Queries:</h4>
-        <div className="examples-list">
+        <h4 className="examples-title">
+          <span className="examples-icon">💡</span>
+          Quick Start Examples
+        </h4>
+        <div className="examples-grid">
           {exampleQueries.map((example, index) => (
             <button
               key={index}
@@ -98,28 +147,18 @@ const QueryForm = ({ onSubmit, disabled }) => {
               onClick={() => handleExampleClick(example)}
               disabled={disabled}
               className="example-button"
-              style={{
-                display: 'block',
-                width: '100%',
-                textAlign: 'left',
-                background: 'white',
-                border: '1px solid #ddd',
-                padding: '0.5rem 1rem',
-                margin: '0.25rem 0',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f7fa'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+              title={`Click to use: ${example.text}`}
             >
-              {example}
+              <div className="example-category">{example.category}</div>
+              <div className="example-text">{example.text}</div>
+              {example.company && (
+                <div className="example-company">→ {example.company}</div>
+              )}
             </button>
           ))}
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 

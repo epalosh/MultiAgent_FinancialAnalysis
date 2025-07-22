@@ -3,17 +3,17 @@ import React from 'react';
 const LoadingSpinner = () => {
   return (
     <div className="loading-container">
-      <div className="loading-spinner"></div>
-      <div className="loading-text">
-        🤖 Multi-agents are analyzing your request...
+      <div className="modern-spinner">
+        <div className="spinner-ring"></div>
+        <div className="spinner-ring"></div>
+        <div className="spinner-ring"></div>
+        <div className="spinner-center">
+          <span className="spinner-icon">🤖</span>
+        </div>
       </div>
-      <div style={{ 
-        marginTop: '1rem', 
-        fontSize: '0.9rem', 
-        color: '#7f8c8d',
-        fontStyle: 'italic'
-      }}>
-        This may take a few moments while our agents collaborate
+      <div className="loading-text">
+        <span className="loading-title">AI Agents Processing</span>
+        <span className="loading-subtitle">Advanced financial analysis in progress</span>
       </div>
     </div>
   );

@@ -13,6 +13,78 @@ CORS(app)
 # Initialize the financial orchestrator
 orchestrator = FinancialOrchestrator()
 
+@app.route('/api/agents/research', methods=['POST'])
+def research_agent():
+    try:
+        data = request.get_json()
+        query = data.get('query', '')
+        
+        logger.info(f"Research agent request: {query}")
+        
+        # Get research agent output directly
+        result = orchestrator.research_agent.research_company(query)
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'agent': 'Research Agent'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in research agent: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/agents/analysis', methods=['POST'])
+def analysis_agent():
+    try:
+        data = request.get_json()
+        query = data.get('query', '')
+        
+        logger.info(f"Analysis agent request: {query}")
+        
+        # Get analysis agent output directly
+        result = orchestrator.analysis_agent.analyze_data(query)
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'agent': 'Analysis Agent'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in analysis agent: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/agents/recommendation', methods=['POST'])
+def recommendation_agent():
+    try:
+        data = request.get_json()
+        query = data.get('query', '')
+        
+        logger.info(f"Recommendation agent request: {query}")
+        
+        # Get recommendation agent output directly
+        result = orchestrator.recommendation_agent.generate_recommendation(query)
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'agent': 'Recommendation Agent'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in recommendation agent: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/api/analyze', methods=['POST'])
 def analyze_financial_data():
     try:
