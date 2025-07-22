@@ -25,7 +25,6 @@ const AgentFlowChart = ({ steps, currentStep, isRunning, onStepClick, query }) =
   return (
     <div className="agent-flowchart">
       <div className="flowchart-header">
-        <h2>Multi-Agent Financial Analysis Process</h2>
         <div className="query-display">
           <strong>Query:</strong> {query}
         </div>

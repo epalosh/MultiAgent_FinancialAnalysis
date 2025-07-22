@@ -20,8 +20,79 @@ const FinancialReport = ({ report, query, steps, onNewAnalysis }) => {
   const formatText = (text) => {
     if (!text || typeof text !== 'string') return text;
 
-    // Convert markdown-style formatting to HTML
-    let formatted = text
+    // Convert pipe-delimited tables to HTML tables
+    const convertTables = (text) => {
+      const lines = text.split('\n');
+      let result = [];
+      let inTable = false;
+      let tableRows = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // Check if this line looks like a table row (contains |)
+        if (line.includes('|') && line.split('|').length > 2) {
+          if (!inTable) {
+            inTable = true;
+            tableRows = [];
+          }
+          tableRows.push(line);
+        } else {
+          // If we were in a table and this line is not a table row, close the table
+          if (inTable) {
+            result.push(buildTable(tableRows));
+            tableRows = [];
+            inTable = false;
+          }
+          // Add non-table line
+          if (line.length > 0) {
+            result.push(line);
+          }
+        }
+      }
+
+      // Handle case where table is at the end
+      if (inTable && tableRows.length > 0) {
+        result.push(buildTable(tableRows));
+      }
+
+      return result.join('\n');
+    };
+
+    const buildTable = (rows) => {
+      if (rows.length === 0) return '';
+
+      let tableHtml = '<table>';
+      
+      rows.forEach((row, index) => {
+        const cells = row.split('|')
+          .map(cell => cell.trim())
+          .filter(cell => cell.length > 0);
+        
+        // Skip separator rows (like |---|---|---|)
+        if (cells.every(cell => cell.match(/^[-\s]*$/))) {
+          return;
+        }
+
+        const isHeader = index === 0 || (index === 1 && rows[0].includes('|'));
+        const tag = isHeader ? 'th' : 'td';
+        
+        tableHtml += '<tr>';
+        cells.forEach(cell => {
+          tableHtml += `<${tag}>${cell}</${tag}>`;
+        });
+        tableHtml += '</tr>';
+      });
+      
+      tableHtml += '</table>';
+      return tableHtml;
+    };
+
+    // First convert tables
+    let formatted = convertTables(text);
+
+    // Then apply other markdown-style formatting
+    formatted = formatted
       // Headers
       .replace(/^### (.*$)/gim, '<h3>$1</h3>')
       .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -37,7 +108,7 @@ const FinancialReport = ({ report, query, steps, onNewAnalysis }) => {
       .replace(/\n/g, '<br/>');
 
     // Wrap in paragraphs if not already wrapped
-    if (!formatted.includes('<h') && !formatted.includes('<p>')) {
+    if (!formatted.includes('<h') && !formatted.includes('<p>') && !formatted.includes('<table>')) {
       formatted = '<p>' + formatted + '</p>';
     }
 
