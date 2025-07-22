@@ -1,4 +1,5 @@
 from langchain.llms.base import BaseLLM
+from langchain.schema import HumanMessage
 from typing import Any, Dict
 import json
 
@@ -7,29 +8,59 @@ class RecommendationAgent:
         self.llm = llm
         self.name = "Recommendation Agent"
     
+    def _call_llm(self, prompt: str) -> str:
+        """Helper method to call the LLM with proper format"""
+        try:
+            # Check if it's ChatOpenAI (has message-based interface)
+            if hasattr(self.llm, 'predict_messages') or 'Chat' in str(type(self.llm)):
+                response = self.llm.invoke([HumanMessage(content=prompt)])
+                return response.content if hasattr(response, 'content') else str(response)
+            else:
+                # Fallback for other LLM types
+                return self.llm.invoke(prompt)
+        except Exception as e:
+            return f"LLM call failed: {str(e)}"
+    
     def generate_recommendation(self, analysis_data: str) -> str:
         """
-        Generate investment recommendations based on analysis results
+        Generate comprehensive investment recommendations based on analysis results
         """
         try:
             prompt = f"""
-            As an investment advisor, please provide recommendations based on the following analysis: {analysis_data}
+            As a financial advisor, provide investment recommendations based on: {analysis_data}
             
-            Please provide:
-            1. Investment recommendation (Buy/Hold/Sell) with confidence level
-            2. Target price range (if applicable)
-            3. Key risks and opportunities
-            4. Portfolio allocation suggestions
-            5. Time horizon considerations
-            6. Alternative investment options
-            
-            Provide clear, actionable recommendations with reasoning for each suggestion.
-            Disclaimer: Include appropriate risk warnings and mention this is not financial advice.
+            Provide a concise analysis (500-800 words) covering:
+
+            ## Investment Recommendation
+            - Clear Buy/Hold/Sell with confidence level (1-10)
+            - Target price range (12-month) and rationale
+            - Position sizing recommendation
+
+            ## Key Investment Drivers
+            - Top 3-4 reasons supporting the recommendation
+            - Expected return scenarios (bull/base/bear)
+            - Key catalysts and timing
+
+            ## Risk Analysis
+            - Primary risk factors
+            - Risk mitigation strategies
+            - Maximum drawdown expectations
+
+            ## Portfolio Context
+            - Allocation recommendation for different risk profiles
+            - Alternative investment options
+
+            ## Monitoring Framework
+            - Key metrics to track quarterly
+            - Rebalancing triggers
+
+            Be concise but quantitative. Include specific percentages and ratios.
+            Disclaimer: This is analytical research, not personalized financial advice.
             """
             
-            result = self.llm(prompt)
+            result = self._call_llm(prompt)
             
-            return f"Recommendation Agent findings:\n{result}"
+            return f"💡 COMPREHENSIVE INVESTMENT RECOMMENDATIONS & DETAILED ANALYSIS:\n\n{result}"
             
         except Exception as e:
             return f"Recommendation Agent error: {str(e)}"

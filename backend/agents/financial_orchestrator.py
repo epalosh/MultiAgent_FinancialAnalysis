@@ -1,5 +1,5 @@
 from langchain.agents import create_react_agent, AgentExecutor
-from langchain_openai import OpenAI
+from langchain_openai import ChatOpenAI
 from langchain.tools import Tool
 from langchain.memory import ConversationBufferMemory
 from langchain import hub
@@ -20,10 +20,13 @@ class FinancialOrchestrator:
         # Configuration from config.py
         self.openai_api_key = config.OPENAI_API_KEY
         
-        # Initialize LLM
-        self.llm = OpenAI(
+        # Initialize LLM with higher token limits
+        self.llm = ChatOpenAI(
+            model_name=config.OPENAI_MODEL,
             temperature=config.AGENT_TEMPERATURE,
-            api_key=self.openai_api_key
+            api_key=self.openai_api_key,
+            max_tokens=getattr(config, 'MAX_TOKENS', 16000),  # Use configurable max tokens
+            request_timeout=getattr(config, 'TIMEOUT_SECONDS', 60)
         )
         
         # Initialize memory
@@ -86,6 +89,16 @@ Thought:{agent_scratchpad}"""
             memory=self.memory
         )
     
+    def _call_llm(self, prompt: str) -> str:
+        """Helper method to call the LLM with proper format for ChatOpenAI"""
+        try:
+            # For ChatOpenAI, we need to format the prompt as a message
+            from langchain.schema import HumanMessage
+            response = self.llm.invoke([HumanMessage(content=prompt)])
+            return response.content if hasattr(response, 'content') else str(response)
+        except Exception as e:
+            return f"LLM call failed: {str(e)}"
+    
     def _create_tools(self) -> List[Tool]:
         """Create tools that the orchestrator can use to delegate to specialized agents"""
         tools = [
@@ -109,31 +122,36 @@ Thought:{agent_scratchpad}"""
     
     def orchestrate_analysis(self, query: str, company: str = "") -> Dict[str, Any]:
         """
-        Main orchestration method that coordinates multiple agents
+        Main orchestration method that coordinates multiple agents to produce a comprehensive report
         """
         try:
-            # Enhance the query with context
-            enhanced_query = f"""
-            Please analyze the following financial query: {query}
-            {f'For company: {company}' if company else ''}
+            # Step 1: Research Phase
+            research_findings = self.research_agent.research_company(query)
             
-            Follow this process:
-            1. First, use Research_Company to gather relevant financial information
-            2. Then, use Analyze_Financial_Data to perform detailed analysis
-            3. Finally, use Generate_Recommendations to provide actionable insights
+            # Step 2: Analysis Phase
+            analysis_results = self.analysis_agent.analyze_data(query + "\n\nResearch Context:\n" + research_findings)
             
-            Provide a comprehensive response that includes all findings from each agent.
-            """
+            # Step 3: Recommendations Phase
+            recommendations = self.recommendation_agent.generate_recommendation(
+                query + "\n\nResearch Context:\n" + research_findings + "\n\nAnalysis Results:\n" + analysis_results
+            )
             
-            # Run the orchestrator agent
-            result = self.orchestrator_agent.invoke({"input": enhanced_query})
+            # Step 4: Generate comprehensive professional report
+            comprehensive_report = self._generate_comprehensive_report(
+                query, research_findings, analysis_results, recommendations
+            )
             
             return {
                 'query': query,
                 'company': company,
-                'analysis': result.get('output', str(result)),
+                'analysis': comprehensive_report,
                 'agents_used': ['Research Agent', 'Analysis Agent', 'Recommendation Agent'],
-                'timestamp': self._get_timestamp()
+                'timestamp': self._get_timestamp(),
+                'report_sections': {
+                    'research': research_findings,
+                    'analysis': analysis_results,
+                    'recommendations': recommendations
+                }
             }
             
         except Exception as e:
@@ -143,6 +161,45 @@ Thought:{agent_scratchpad}"""
                 'error': str(e),
                 'timestamp': self._get_timestamp()
             }
+    
+    def _generate_comprehensive_report(self, query: str, research: str, analysis: str, recommendations: str) -> str:
+        """
+        Generate a comprehensive professional financial report
+        """
+        report_prompt = f"""
+        Create a professional financial analysis report based on:
+
+        QUERY: {query}
+        RESEARCH: {research}
+        ANALYSIS: {analysis} 
+        RECOMMENDATIONS: {recommendations}
+
+        Create a comprehensive report (800-1200 words) with:
+
+        # EXECUTIVE SUMMARY
+        [200 word summary covering investment recommendation, key metrics, and target price]
+
+        # INVESTMENT THESIS
+        [300 words covering key arguments, competitive advantages, and value drivers]
+
+        # FINANCIAL ANALYSIS
+        [300 words covering ratio analysis, profitability trends, and financial projections]
+
+        # RISK ASSESSMENT
+        [200 words covering primary risks and mitigation strategies]
+
+        # RECOMMENDATIONS
+        [200 words covering specific recommendations, position sizing, and monitoring points]
+
+        Include specific financial metrics, ratios, and quantitative analysis.
+        Add disclaimers emphasizing this is research, not personalized advice.
+        """
+        
+        try:
+            comprehensive_report = self._call_llm(report_prompt)
+            return comprehensive_report
+        except Exception as e:
+            return f"Error generating comprehensive report: {str(e)}\n\nFallback Summary:\n{research}\n\n{analysis}\n\n{recommendations}"
     
     def get_agents_info(self) -> Dict[str, Any]:
         """Return information about available agents"""

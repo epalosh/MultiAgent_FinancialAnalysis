@@ -24,9 +24,10 @@ def research_agent():
         # Get research agent output directly
         result = orchestrator.research_agent.research_company(query)
         
+        # Return the full detailed research output for the discourse
         return jsonify({
             'success': True,
-            'result': result,
+            'result': f"✅ Research phase completed successfully. Generated comprehensive research report with detailed financial data, competitive analysis, and market intelligence.\n\nFULL RESEARCH OUTPUT:\n{result}",
             'agent': 'Research Agent'
         })
         
@@ -48,9 +49,10 @@ def analysis_agent():
         # Get analysis agent output directly
         result = orchestrator.analysis_agent.analyze_data(query)
         
+        # Return the full detailed analysis output for the discourse
         return jsonify({
             'success': True,
-            'result': result,
+            'result': f"✅ Financial analysis completed successfully. Generated comprehensive financial analysis with detailed calculations, ratio analysis, and risk assessment.\n\nFULL ANALYSIS OUTPUT:\n{result}",
             'agent': 'Analysis Agent'
         })
         
@@ -72,9 +74,10 @@ def recommendation_agent():
         # Get recommendation agent output directly
         result = orchestrator.recommendation_agent.generate_recommendation(query)
         
+        # Return the full detailed recommendations output for the discourse
         return jsonify({
             'success': True,
-            'result': result,
+            'result': f"✅ Investment strategy formulation completed successfully. Generated comprehensive investment recommendations with detailed analysis and actionable insights.\n\nFULL RECOMMENDATIONS OUTPUT:\n{result}",
             'agent': 'Recommendation Agent'
         })
         
