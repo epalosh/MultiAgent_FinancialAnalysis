@@ -19,7 +19,7 @@ def research_agent():
         data = request.get_json()
         query = data.get('query', '')
         
-        logger.info(f"🔍 Research agent request: {query}")
+        logger.info(f"Research agent request: {query}")
         
         # Get research agent output directly
         result = orchestrator.research_agent.research_company(query)
@@ -182,7 +182,7 @@ def quick_stock_analysis():
         
         symbol = data['symbol'].upper()
         
-        logger.info(f"🔍 Quick analysis for: {symbol}")
+        logger.info(f"Quick analysis for: {symbol}")
         
         # Get quick analysis using enhanced research agent
         result = orchestrator.enhanced_research_agent.get_quick_analysis(symbol)

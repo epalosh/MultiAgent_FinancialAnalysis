@@ -6,10 +6,7 @@ const QueryForm = ({ onSubmit }) => {
 
   const exampleQueries = [
     'Analyze Apple Inc. (AAPL) financial performance and investment potential',
-    'Perform comprehensive analysis of Tesla Inc. (TSLA) including risks and opportunities',
     'Evaluate Microsoft Corporation (MSFT) quarterly earnings and market position',
-    'Research Amazon.com Inc. (AMZN) competitive advantages and growth prospects',
-    'Analyze the financial health and investment outlook for Google (GOOGL)',
     'Assess the investment potential of Nvidia Corporation (NVDA) in the AI market'
   ];
 
@@ -31,8 +28,6 @@ const QueryForm = ({ onSubmit }) => {
 
   return (
     <div className="query-form">
-      <h2>Financial Analysis Query</h2>
-      <p>Enter a company name or financial analysis request to begin the multi-agent research process.</p>
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">

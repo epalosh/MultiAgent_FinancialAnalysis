@@ -2,10 +2,10 @@ import React from 'react';
 
 const AgentStatus = ({ agents }) => {
   const agentIcons = {
-    'Research Agent': '🔍',
-    'Analysis Agent': '📊',
-    'Recommendation Agent': '💡',
-    'Financial Orchestrator': '🎯'
+    'Research Agent': '',
+    'Analysis Agent': '',
+    'Recommendation Agent': '',
+    'Financial Orchestrator': ''
   };
 
   const agentColors = {

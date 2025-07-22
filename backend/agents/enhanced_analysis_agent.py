@@ -50,7 +50,7 @@ class EnhancedAnalysisAgent:
             # Perform comprehensive analysis with real data
             analysis = self._perform_comprehensive_analysis(symbol, real_data, research_data)
             
-            return f"📊 **ENHANCED FINANCIAL ANALYSIS** ({symbol})\n📈 Real-time Data Analysis Complete\n\n{analysis}"
+            return f"**ENHANCED FINANCIAL ANALYSIS** ({symbol})\nReal-time Data Analysis Complete\n\n{analysis}"
             
         except Exception as e:
             return f"Enhanced Analysis Agent error: {str(e)}"
@@ -91,39 +91,39 @@ class EnhancedAnalysisAgent:
         
         Provide a comprehensive financial analysis covering:
         
-        # 📊 FINANCIAL ANALYSIS REVIEW
+        # FINANCIAL ANALYSIS REVIEW
         
-        ## 🔍 DATA VALIDATION & QUALITY ASSESSMENT
+        ## DATA VALIDATION & QUALITY ASSESSMENT
         - Assess the completeness and reliability of the financial data presented
         - Identify any missing critical metrics or data points
         - Comment on the recency and relevance of the information
         
-        ## 📈 PERFORMANCE ANALYSIS DEEP DIVE
+        ## PERFORMANCE ANALYSIS DEEP DIVE
         - Analyze the financial performance trends mentioned
         - Compare performance metrics against industry benchmarks (if available)
         - Identify strengths and weaknesses in the financial profile
         
-        ## 💰 VALUATION ASSESSMENT
+        ## VALUATION ASSESSMENT
         - Review the valuation metrics and their appropriateness
         - Assess if the company appears fairly valued, overvalued, or undervalued
         - Identify key valuation drivers and risks
         
-        ## ⚠️ RISK ANALYSIS
+        ## RISK ANALYSIS
         - Identify financial, operational, and market risks
         - Assess the company's financial stability and liquidity
         - Evaluate competitive position and industry challenges
         
-        ## 🎯 INVESTMENT IMPLICATIONS
+        ## INVESTMENT IMPLICATIONS
         - Provide investment thesis validation or challenges
         - Suggest areas requiring additional research
         - Recommend investment approach based on risk profile
         
-        ## 📋 ANALYTICAL RECOMMENDATIONS
+        ## ANALYTICAL RECOMMENDATIONS
         - Suggest additional metrics or data points that would strengthen the analysis
         - Recommend monitoring key performance indicators
         - Provide guidance on investment timing and strategy
         
-        Focus on providing actionable insights and professional-grade financial analysis.
+        Focus on providing actionable insights and professional-grade financial analysis. Do not use emojis in your response.
         """
         
         return self._call_llm(prompt)
@@ -162,9 +162,9 @@ class EnhancedAnalysisAgent:
         
         Provide a comprehensive financial analysis using this real data:
 
-        # 📊 ENHANCED FINANCIAL ANALYSIS: {symbol}
+        # ENHANCED FINANCIAL ANALYSIS: {symbol}
         
-        ## 🔢 QUANTITATIVE ANALYSIS
+        ## QUANTITATIVE ANALYSIS
         
         ### Advanced Financial Metrics (Calculated from Real Data)
         **Profitability Analysis:**
@@ -176,7 +176,7 @@ class EnhancedAnalysisAgent:
         **Liquidity & Solvency:**
         {self._format_liquidity_analysis(real_data, advanced_metrics)}
         
-        ## 📈 PERFORMANCE BENCHMARKING
+        ## PERFORMANCE BENCHMARKING
         
         ### Market Performance vs Benchmarks
         **Relative Performance:**
@@ -192,7 +192,7 @@ class EnhancedAnalysisAgent:
         - EV/EBITDA: {valuation_metrics.get('ev_to_ebitda', 0):.1f}
         - PEG Ratio: {valuation_metrics.get('peg_ratio', 0):.2f} ({'Undervalued' if valuation_metrics.get('peg_ratio', 2) < 1 else 'Fairly Valued' if valuation_metrics.get('peg_ratio', 2) < 1.5 else 'Overvalued'})
         
-        ## ⚠️ COMPREHENSIVE RISK ANALYSIS
+        ## COMPREHENSIVE RISK ANALYSIS
         
         ### Systematic Risk Assessment
         - **Market Risk (Beta):** {risk_metrics.get('beta', 0):.2f} ({'Low' if risk_metrics.get('beta', 1) < 0.8 else 'Moderate' if risk_metrics.get('beta', 1) < 1.2 else 'High'} correlation with market)
@@ -203,7 +203,7 @@ class EnhancedAnalysisAgent:
         ### Financial Risk Assessment
         {self._format_financial_risk_analysis(risk_assessment)}
         
-        ## 🎯 INVESTMENT RECOMMENDATION FRAMEWORK
+        ## INVESTMENT RECOMMENDATION FRAMEWORK
         
         ### Quantitative Investment Score: {investment_score}/100
         {self._format_investment_score_breakdown(investment_score, advanced_metrics)}
@@ -220,7 +220,7 @@ class EnhancedAnalysisAgent:
         **Investment Horizon:** {self._recommend_investment_horizon(real_data, risk_metrics)}
         **Risk Management:** {self._recommend_risk_management(risk_assessment)}
         
-        ## 📊 SCENARIO ANALYSIS
+        ## SCENARIO ANALYSIS
         
         ### Bull Case Scenario
         {self._generate_bull_case(real_data, advanced_metrics)}
@@ -231,7 +231,7 @@ class EnhancedAnalysisAgent:
         ### Base Case Expectation
         {self._generate_base_case(real_data)}
         
-        ## 🔍 MONITORING & ACTION ITEMS
+        ## MONITORING & ACTION ITEMS
         
         ### Key Metrics to Track
         1. **Financial Health:** Monitor quarterly earnings, cash flow, and debt levels
@@ -643,7 +643,7 @@ class EnhancedAnalysisAgent:
             # Generate comparison analysis
             analysis = self._generate_stock_comparison(comparison_data)
             
-            return f"📊 **MULTI-STOCK COMPARISON ANALYSIS**\n\n{analysis}"
+            return f"**MULTI-STOCK COMPARISON ANALYSIS**\n\n{analysis}"
             
         except Exception as e:
             return f"Error in stock comparison: {str(e)}"
@@ -680,9 +680,9 @@ class EnhancedAnalysisAgent:
         
         Generate a professional comparative analysis:
 
-        # 📊 MULTI-STOCK COMPARATIVE ANALYSIS
+        # MULTI-STOCK COMPARATIVE ANALYSIS
         
-        ## 📈 PERFORMANCE COMPARISON
+        ## PERFORMANCE COMPARISON
         
         ### Price Performance (1-Year Returns)
         {self._format_performance_comparison(comparison_metrics)}
@@ -711,7 +711,7 @@ class EnhancedAnalysisAgent:
         2. **[Second Stock]** - [Detailed reasoning based on real metrics]  
         3. **[Third Stock]** - [Detailed reasoning based on real metrics]
         
-        ## 📋 PORTFOLIO ALLOCATION SUGGESTIONS
+        ## PORTFOLIO ALLOCATION SUGGESTIONS
         
         **Diversified Portfolio Approach:**
         - Conservative Investor: [Allocation percentages and reasoning]
@@ -724,7 +724,7 @@ class EnhancedAnalysisAgent:
         - Best dividend yield: [Stock and reasoning]
         - Lowest risk option: [Stock and reasoning]
         
-        ## 🔍 MONITORING RECOMMENDATIONS
+        ## MONITORING RECOMMENDATIONS
         
         **Key Events to Watch:**
         - [Specific upcoming catalysts for each stock]

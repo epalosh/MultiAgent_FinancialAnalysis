@@ -101,19 +101,19 @@ class EnhancedResearchAgent:
             symbol = self._extract_stock_symbol(company_info)
             
             if not symbol:
-                return f"🔍 Unable to identify stock symbol from: {company_info}. Please provide a valid stock ticker symbol (e.g., AAPL, MSFT, GOOGL)"
+                return f"Unable to identify stock symbol from: {company_info}. Please provide a valid stock ticker symbol (e.g., AAPL, MSFT, GOOGL)"
             
             # Get comprehensive real data
-            print(f"🔄 Fetching real financial data for {symbol}...")
+            print(f"Fetching real financial data for {symbol}...")
             real_data = self.data_service.get_comprehensive_stock_data(symbol)
             
             if "error" in real_data:
-                return f"❌ Error fetching data for {symbol}: {real_data['error']}"
+                return f"Error fetching data for {symbol}: {real_data['error']}"
             
             # Generate comprehensive analysis using real data
             analysis = self._generate_comprehensive_analysis(symbol, real_data)
             
-            return f"🔍 **REAL-TIME FINANCIAL RESEARCH REPORT** ({symbol})\n📊 Data Updated: {real_data.get('data_timestamp', 'N/A')}\n\n{analysis}"
+            return f"**REAL-TIME FINANCIAL RESEARCH REPORT** ({symbol})\nData Updated: {real_data.get('data_timestamp', 'N/A')}\n\n{analysis}"
             
         except Exception as e:
             return f"Enhanced Research Agent error: {str(e)}"
@@ -143,15 +143,17 @@ class EnhancedResearchAgent:
         3. Base ALL conclusions on the actual data provided
         4. If specific data is missing, clearly state "Data not available" rather than estimating
         5. Use professional financial analysis language and provide actionable insights
+
+        Do not use emojis in your response.
         
         **REAL FINANCIAL DATA FOR {symbol}:**
         {formatted_real_data}
         
         Generate a comprehensive professional financial research report using ONLY this real data:
 
-        # 📈 FINANCIAL RESEARCH REPORT: {basic_info.get('company_name', symbol)}
+        # FINANCIAL RESEARCH REPORT: {basic_info.get('company_name', symbol)}
         
-        ## 🏢 EXECUTIVE SUMMARY
+        ## EXECUTIVE SUMMARY
         **Company Overview:**
         - Company: {basic_info.get('company_name', 'N/A')} (Ticker: {symbol})
         - Sector: {basic_info.get('sector', 'N/A')}
@@ -166,7 +168,7 @@ class EnhancedResearchAgent:
         
         **Investment Thesis:** [Provide 2-3 sentence summary based on the real financial metrics]
 
-        ## 📊 FINANCIAL PERFORMANCE ANALYSIS
+        ## FINANCIAL PERFORMANCE ANALYSIS
 
         ### Stock Performance Analysis
         **Recent Price Performance:**
@@ -181,7 +183,7 @@ class EnhancedResearchAgent:
         ### Financial Statement Analysis
         {self._format_financial_statements_analysis(financial_statements)}
 
-        ## 💰 VALUATION ANALYSIS
+        ## VALUATION ANALYSIS
 
         ### Key Valuation Metrics (REAL DATA)
         - P/E Ratio (TTM): {valuation_metrics.get('pe_ratio', 0):.1f}
@@ -194,7 +196,7 @@ class EnhancedResearchAgent:
 
         {self._format_dividend_analysis(valuation_metrics)}
 
-        ## 🏭 MARKET CONTEXT & PERFORMANCE
+        ## MARKET CONTEXT & PERFORMANCE
 
         ### Broader Market Comparison
         - S&P 500 1-Year Return: {market_data.get('sp500_1y_return', 'N/A'):.1f}%
@@ -205,7 +207,7 @@ class EnhancedResearchAgent:
         **Sector Peers:** {', '.join(peer_data.get('peers', []))}
         **Industry:** {basic_info.get('industry', 'N/A')}
 
-        ## 📰 MARKET SENTIMENT & ANALYSIS
+        ## MARKET SENTIMENT & ANALYSIS
 
         ### Analyst Coverage
         {self._format_analyst_coverage(analyst_data)}
@@ -213,7 +215,7 @@ class EnhancedResearchAgent:
         ### Recent Market Activity
         {self._format_recent_news(news_data)}
 
-        ## ⚠️ RISK ASSESSMENT
+        ## RISK ASSESSMENT
 
         ### Financial Risk Metrics (REAL DATA)
         - Current Ratio: {risk_metrics.get('current_ratio', 0):.2f}
@@ -228,7 +230,7 @@ class EnhancedResearchAgent:
         3. **Market Risk:** [Based on beta and volatility]
         4. **Business Risk:** [Based on sector, margins, and competitive position]
 
-        ## 🎯 INVESTMENT RECOMMENDATION
+        ## INVESTMENT RECOMMENDATION
 
         ### Professional Assessment
         **Rating:** [Provide BUY/HOLD/SELL based on real data analysis]
@@ -247,7 +249,7 @@ class EnhancedResearchAgent:
 
         **Price Target Rationale:** [Use real valuation metrics to justify]
 
-        ## 📋 DATA QUALITY & METHODOLOGY
+        ## DATA QUALITY & METHODOLOGY
 
         **Data Sources:** Live market data via Yahoo Finance APIs
         **Last Updated:** {data.get('data_timestamp', 'N/A')}
@@ -406,7 +408,7 @@ class EnhancedResearchAgent:
             # Get fundamental data
             fundamentals = self.data_service.get_stock_fundamentals(symbol)
             if "error" in fundamentals:
-                return f"❌ {fundamentals['error']}"
+                return f"{fundamentals['error']}"
             
             # Get technical indicators
             technical = self.data_service.get_technical_indicators(symbol)
@@ -415,9 +417,9 @@ class EnhancedResearchAgent:
             
             # Format quick analysis
             analysis = f"""
-🔍 **QUICK ANALYSIS: {symbol}**
+**QUICK ANALYSIS: {symbol}**
 
-**📊 Key Fundamentals:**
+**Key Fundamentals:**
 - P/E Ratio: {fundamentals.get('pe_ratio', 0):.1f}
 - Price-to-Book: {fundamentals.get('price_to_book', 0):.2f}
 - ROE: {fundamentals.get('roe', 0):.1f}%

@@ -233,17 +233,17 @@ This report synthesizes outputs from our multi-agent financial analysis system.
 
 ---
 
-## 🔍 RESEARCH FINDINGS
+## RESEARCH FINDINGS
 ${agentOutputs.research || 'Research data not available'}
 
 ---
 
-## 📊 FINANCIAL ANALYSIS  
+## FINANCIAL ANALYSIS  
 ${agentOutputs.analysis || 'Analysis data not available'}
 
 ---
 
-## 💡 INVESTMENT RECOMMENDATIONS
+## INVESTMENT RECOMMENDATIONS
 ${agentOutputs.recommendation || 'Recommendations not available'}
 
 ---
@@ -268,17 +268,17 @@ This report synthesizes outputs from our multi-agent financial analysis system.
 
 ---
 
-## 🔍 RESEARCH FINDINGS
+## RESEARCH FINDINGS
 ${agentOutputs.research || 'Research data not available'}
 
 ---
 
-## 📊 FINANCIAL ANALYSIS
+## FINANCIAL ANALYSIS
 ${agentOutputs.analysis || 'Analysis data not available'}
 
 ---
 
-## 💡 INVESTMENT RECOMMENDATIONS
+## INVESTMENT RECOMMENDATIONS
 ${agentOutputs.recommendation || 'Recommendations not available'}
 
 ---
@@ -322,8 +322,8 @@ ${agentOutputs.recommendation || 'Recommendations not available'}
     <div className="app">
       <header className="app-header">
         <div className="header-content">
-          <h1>Financial Analysis Research Platform</h1>
-          <p>Multi-Agent Financial Intelligence System</p>
+          <h1>Multi-Agent Financial Analysis Research Platform</h1>
+          <p>Built on LangChain, with yFinance integration for real data.</p>
         </div>
       </header>
 

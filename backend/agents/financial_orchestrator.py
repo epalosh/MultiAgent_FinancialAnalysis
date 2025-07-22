@@ -148,9 +148,9 @@ Thought:{agent_scratchpad}"""
             print(f"✅ Enhanced research completed - {len(research_findings)} characters generated")
             
             # Step 2: Enhanced Analysis Phase with Real Data
-            print("🔍 Phase 2: Performing quantitative analysis with real market data...")
+            print("Phase 2: Performing quantitative analysis with real market data...")
             analysis_results = self.analysis_agent.analyze_financial_data(research_findings)
-            print(f"✅ Enhanced analysis completed - {len(analysis_results)} characters generated")
+            print(f"Enhanced analysis completed - {len(analysis_results)} characters generated")
             
             # Step 3: Recommendations Phase (using enhanced data)
             print("💡 Phase 3: Generating data-driven investment recommendations...")
@@ -363,12 +363,14 @@ Thought:{agent_scratchpad}"""
         5. Include risk warnings based on actual risk metrics
         6. Reference data sources and timestamps
 
+        Do not use emojis in your response.
+
         Generate a comprehensive report structured as follows:
 
-        # 📊 INSTITUTIONAL FINANCIAL ANALYSIS REPORT
+        # INSTITUTIONAL FINANCIAL ANALYSIS REPORT
         **Real-Time Data Analysis | Live Market Sources**
 
-        ## 🎯 EXECUTIVE SUMMARY
+        ## EXECUTIVE SUMMARY
 
         **Investment Rating:** [Based on real investment score] | **Price Target:** $[Based on real valuation] | **Expected Return:** [Based on real calculations]
         
@@ -381,7 +383,7 @@ Thought:{agent_scratchpad}"""
         
         **Investment Thesis:** [Based on real financial metrics and analysis]
 
-        ## 📈 REAL-TIME MARKET PERFORMANCE
+        ## REAL-TIME MARKET PERFORMANCE
 
         ### Current Market Position
         [Use actual price data, 52-week ranges, volume data]
@@ -389,7 +391,7 @@ Thought:{agent_scratchpad}"""
         ### Performance vs Benchmarks
         [Use actual return comparisons with S&P 500, NASDAQ]
 
-        ## 💰 FUNDAMENTAL ANALYSIS (REAL DATA)
+        ## FUNDAMENTAL ANALYSIS (REAL DATA)
 
         ### Valuation Metrics
         [Use actual P/E, P/B, EV/EBITDA, PEG ratios from data]
@@ -400,7 +402,7 @@ Thought:{agent_scratchpad}"""
         ### Profitability Analysis  
         [Use actual margins, ROE, ROA from financial statements]
 
-        ## ⚠️ RISK ASSESSMENT (QUANTIFIED)
+        ## RISK ASSESSMENT (QUANTIFIED)
 
         ### Risk Metrics (Real Data)
         [Use actual beta, volatility, max drawdown, VaR]
@@ -408,7 +410,7 @@ Thought:{agent_scratchpad}"""
         ### Risk Factors
         [List actual risk factors identified from analysis]
 
-        ## 🎯 INVESTMENT RECOMMENDATION
+        ## INVESTMENT RECOMMENDATION
 
         ### Quantitative Investment Score
         [Use actual investment score from analysis]
@@ -419,7 +421,7 @@ Thought:{agent_scratchpad}"""
         ### Monitoring Strategy
         [Specific metrics to track based on analysis]
 
-        ## 📊 DATA SOURCES & METHODOLOGY
+        ## DATA SOURCES & METHODOLOGY
 
         **Data Sources:** Yahoo Finance APIs, SEC EDGAR, Live Market Data
         **Data Timestamp:** [Use actual timestamp from data]

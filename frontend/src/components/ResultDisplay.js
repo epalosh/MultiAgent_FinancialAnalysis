@@ -17,9 +17,9 @@ const ResultDisplay = ({ result }) => {
   };
 
   const tabs = [
-    { id: 'analysis', label: '📊 Analysis Results', icon: '📊' },
-    { id: 'summary', label: '📋 Executive Summary', icon: '📋' },
-    { id: 'details', label: '🔍 Technical Details', icon: '🔍' }
+    { id: 'analysis', label: 'Analysis Results', icon: '' },
+    { id: 'summary', label: 'Executive Summary', icon: '' },
+    { id: 'details', label: 'Technical Details', icon: '' }
   ];
 
   // Split the analysis into sections (this is a simple approach - could be enhanced based on actual API response structure)

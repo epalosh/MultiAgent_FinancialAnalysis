@@ -36,6 +36,8 @@ class RecommendationAgent:
             4. Generate mathematically consistent recommendations
             5. Use professional, institutional-quality analysis
 
+            Do not use emojis in your response.
+
             # COMPREHENSIVE INVESTMENT RECOMMENDATION REPORT
 
             ## EXECUTIVE INVESTMENT SUMMARY
@@ -239,7 +241,7 @@ class RecommendationAgent:
             
             result = self._call_llm(prompt)
             
-            return f"💡 INVESTMENT RECOMMENDATIONS & STRATEGY:\n\n{result}"
+            return f"INVESTMENT RECOMMENDATIONS & STRATEGY:\n\n{result}"
             
         except Exception as e:
             return f"Recommendation Agent error: {str(e)}"

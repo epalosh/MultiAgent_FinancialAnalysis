@@ -136,7 +136,7 @@ const FinancialReport = ({ report, query, steps, onNewAnalysis }) => {
   return (
     <div className="financial-report">
       <div className="report-header">
-        <h2>Financial Analysis Report</h2>
+        <h2>Final Report</h2>
         <div className="report-metadata">
           <div>
             <strong>Generated:</strong> {getCurrentTimestamp()}
