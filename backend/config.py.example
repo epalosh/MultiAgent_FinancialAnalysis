@@ -1,0 +1,19 @@
+# Configuration settings for the Multi-Agent Financial Analysis System
+# Copy this file to config.py and update the values
+
+# OpenAI Configuration
+OPENAI_API_KEY = "your-openai-api-key-here"  # Replace with your actual OpenAI API key
+OPENAI_MODEL = "gpt-3.5-turbo-instruct"  # You can change this to other models like "gpt-4"
+
+# Flask Configuration
+FLASK_HOST = "0.0.0.0"
+FLASK_PORT = 5000
+FLASK_DEBUG = True
+
+# Agent Configuration
+AGENT_TEMPERATURE = 0.7  # Controls randomness in agent responses (0.0 to 1.0)
+AGENT_VERBOSE = True  # Enable verbose logging for agents
+
+# System Configuration
+MAX_RETRIES = 3  # Maximum number of retries for failed API calls
+TIMEOUT_SECONDS = 30  # Timeout for API calls
