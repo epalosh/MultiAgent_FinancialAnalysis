@@ -5,9 +5,8 @@ const QueryForm = ({ onSubmit }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const exampleQueries = [
-    'Analyze Apple Inc. (AAPL) financial performance and investment potential',
-    'Evaluate Microsoft Corporation (MSFT) quarterly earnings and market position',
-    'Assess the investment potential of Nvidia Corporation (NVDA) in the AI market'
+    'Give a comprehensive data-driven report on Microsoft (MSFT) stock.',
+    'Provide key indicators for Tesla (TSLA) and its performance for the rest of the year'
   ];
 
   const handleSubmit = async (e) => {
@@ -37,7 +36,7 @@ const QueryForm = ({ onSubmit }) => {
             className="form-input form-textarea"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter your financial analysis query here... (e.g., 'Analyze Apple Inc. financial performance and investment potential')"
+            placeholder="Enter your financial analysis query here... (e.g., 'Analyze any publicly traded stock: AAPL, TSLA, MSFT, GME, etc.')"
             required
             disabled={isSubmitting}
           />

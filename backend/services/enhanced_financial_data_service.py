@@ -62,6 +62,14 @@ class EnhancedFinancialDataService:
             # Get Yahoo Finance data
             ticker = yf.Ticker(symbol)
             
+            # Validate that the ticker exists by checking basic info
+            try:
+                info = ticker.info
+                if not info or not any(key in info for key in ['symbol', 'shortName', 'longName', 'regularMarketPrice']):
+                    return {"error": f"Invalid or non-existent stock symbol: {symbol}. Please verify the ticker symbol."}
+            except Exception as e:
+                return {"error": f"Unable to retrieve data for {symbol}. Symbol may be invalid or delisted."}
+            
             # Gather all data
             result = {
                 'symbol': symbol,
@@ -77,6 +85,14 @@ class EnhancedFinancialDataService:
                 'market_data': self._get_market_context()
             }
             
+            # Validate that we got meaningful data
+            if not any([
+                result['basic_info'].get('company_name', '') != 'N/A',
+                result['price_data'].get('current_price', 0) > 0,
+                result['valuation_metrics'].get('market_cap', 0) > 0
+            ]):
+                return {"error": f"No meaningful financial data available for {symbol}. Symbol may be inactive or delisted."}
+            
             # Cache the result
             self._cache_data(cache_key, result)
             
@@ -84,7 +100,7 @@ class EnhancedFinancialDataService:
             
         except Exception as e:
             self.logger.error(f"Error fetching data for {symbol}: {str(e)}")
-            return {"error": f"Failed to fetch data for {symbol}: {str(e)}"}
+            return {"error": f"Failed to fetch data for {symbol}: {str(e)}. Please verify the symbol is correct and active."}
     
     def _get_basic_info(self, ticker) -> Dict[str, Any]:
         """Get basic company information"""

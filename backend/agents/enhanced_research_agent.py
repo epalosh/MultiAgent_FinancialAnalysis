@@ -1,6 +1,6 @@
 from langchain.llms.base import BaseLLM
 from langchain.schema import HumanMessage
-from typing import Any, Dict
+from typing import Any, Dict, List
 import json
 import sys
 import os
@@ -38,15 +38,18 @@ class EnhancedResearchAgent:
             r'\(([A-Z]{1,5})\)',  # Symbol in parentheses
             r'ticker[:\s]+([A-Z]{1,5})',  # After "ticker:"
             r'symbol[:\s]+([A-Z]{1,5})',  # After "symbol:"
-            r'\b([A-Z]{3,5})\b'  # 3-5 letter uppercase words
+            r'\b([A-Z]{1,5})\b'  # 1-5 letter uppercase words
         ]
         
         for pattern in patterns:
             match = re.search(pattern, company_info.upper())
             if match:
-                return match.group(1)
+                potential_symbol = match.group(1)
+                # Validate if it's a real stock symbol by checking with yfinance
+                if self._validate_stock_symbol(potential_symbol):
+                    return potential_symbol
         
-        # If no symbol found, try common company name mappings
+        # If no direct symbol found, try common company name mappings
         company_mappings = {
             'APPLE': 'AAPL',
             'MICROSOFT': 'MSFT', 
@@ -88,9 +91,23 @@ class EnhancedResearchAgent:
         company_upper = company_info.upper()
         for company_name, symbol in company_mappings.items():
             if company_name in company_upper:
-                return symbol
+                # Validate the mapped symbol
+                if self._validate_stock_symbol(symbol):
+                    return symbol
                 
         return None
+
+    def _validate_stock_symbol(self, symbol: str) -> bool:
+        """Validate if a stock symbol exists and has data available"""
+        try:
+            import yfinance as yf
+            ticker = yf.Ticker(symbol)
+            # Try to get basic info - if it fails, symbol doesn't exist
+            info = ticker.info
+            # Check if we got meaningful data (not just empty dict)
+            return info and 'symbol' in info or 'shortName' in info or 'longName' in info
+        except Exception:
+            return False
     
     def research_company(self, company_info: str) -> str:
         """
@@ -101,14 +118,31 @@ class EnhancedResearchAgent:
             symbol = self._extract_stock_symbol(company_info)
             
             if not symbol:
-                return f"Unable to identify stock symbol from: {company_info}. Please provide a valid stock ticker symbol (e.g., AAPL, MSFT, GOOGL)"
+                # Try to suggest potential symbols if company name is provided
+                suggestions = self._suggest_symbols(company_info)
+                suggestion_text = f"\n\nDid you mean one of these? {', '.join(suggestions)}" if suggestions else ""
+                return f"""Unable to identify a valid stock symbol from: "{company_info}"
+
+Please provide:
+1. A valid stock ticker symbol (e.g., AAPL, MSFT, GOOGL, TSLA)
+2. Company name with ticker in parentheses (e.g., "Apple Inc. (AAPL)")
+3. Any publicly traded stock symbol on major exchanges{suggestion_text}
+
+The system can analyze ANY publicly traded stock with real-time data from Yahoo Finance."""
             
             # Get comprehensive real data
             print(f"Fetching real financial data for {symbol}...")
             real_data = self.data_service.get_comprehensive_stock_data(symbol)
             
             if "error" in real_data:
-                return f"Error fetching data for {symbol}: {real_data['error']}"
+                return f"""Error fetching data for {symbol}: {real_data['error']}
+
+This might mean:
+1. {symbol} is not a valid/active stock ticker
+2. The stock is delisted or suspended
+3. Temporary data service issue
+
+Please verify the ticker symbol and try again. The system supports all major exchanges (NYSE, NASDAQ, etc.)."""
             
             # Generate comprehensive analysis using real data
             analysis = self._generate_comprehensive_analysis(symbol, real_data)
@@ -117,6 +151,58 @@ class EnhancedResearchAgent:
             
         except Exception as e:
             return f"Enhanced Research Agent error: {str(e)}"
+
+    def _suggest_symbols(self, company_info: str) -> List[str]:
+        """Suggest potential stock symbols based on partial company names"""
+        # Extended company mappings for suggestions
+        suggestions = []
+        company_upper = company_info.upper()
+        
+        # Common partial matches
+        partial_mappings = {
+            'APPLE': ['AAPL'],
+            'MICROSOFT': ['MSFT'],
+            'GOOGLE': ['GOOGL', 'GOOG'], 
+            'AMAZON': ['AMZN'],
+            'TESLA': ['TSLA'],
+            'META': ['META'],
+            'FACEBOOK': ['META'],
+            'NETFLIX': ['NFLX'],
+            'NVIDIA': ['NVDA'],
+            'AMD': ['AMD'],
+            'INTEL': ['INTC'],
+            'WALMART': ['WMT'],
+            'TARGET': ['TGT'],
+            'JOHNSON': ['JNJ'],
+            'PFIZER': ['PFE'],
+            'VISA': ['V'],
+            'MASTERCARD': ['MA'],
+            'COCA': ['KO'],
+            'PEPSI': ['PEP'],
+            'DISNEY': ['DIS'],
+            'BOEING': ['BA'],
+            'FORD': ['F'],
+            'GM': ['GM'],
+            'GENERAL MOTORS': ['GM'],
+            'EXXON': ['XOM'],
+            'CHEVRON': ['CVX'],
+            'BANK': ['JPM', 'BAC', 'WFC', 'C'],
+            'JPMORGAN': ['JPM'],
+            'WELLS FARGO': ['WFC'],
+            'HOME DEPOT': ['HD'],
+            'LOWES': ['LOW'],
+            'MCDONALDS': ['MCD'],
+            'STARBUCKS': ['SBUX'],
+            'ORACLE': ['ORCL'],
+            'SALESFORCE': ['CRM'],
+            'ADOBE': ['ADBE']
+        }
+        
+        for keyword, symbols in partial_mappings.items():
+            if keyword in company_upper:
+                suggestions.extend(symbols)
+        
+        return list(set(suggestions))[:3]  # Return up to 3 unique suggestions
     
     def _generate_comprehensive_analysis(self, symbol: str, data: Dict) -> str:
         """Generate comprehensive analysis using real data"""

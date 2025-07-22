@@ -323,7 +323,7 @@ ${agentOutputs.recommendation || 'Recommendations not available'}
       <header className="app-header">
         <div className="header-content">
           <h1>Multi-Agent Financial Analysis Research Platform</h1>
-          <p>Built on LangChain, with yFinance integration for real data.</p>
+          <p>Built on LangChain, with yFinance and web scraping integration for live data.</p>
         </div>
       </header>
 

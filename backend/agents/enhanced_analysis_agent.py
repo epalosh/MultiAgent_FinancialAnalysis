@@ -71,14 +71,30 @@ class EnhancedAnalysisAgent:
             r'Ticker: ([A-Z]{1,5})',  # After "Ticker:"
             r'Symbol: ([A-Z]{1,5})',  # After "Symbol:"
             r'REPORT.*?([A-Z]{2,5})\)',  # In report headers
+            r'\b([A-Z]{1,5})\b'  # Any 1-5 letter uppercase words
         ]
         
         for pattern in patterns:
             match = re.search(pattern, research_data)
             if match:
-                return match.group(1)
+                potential_symbol = match.group(1)
+                # Validate if it's a real stock symbol
+                if self._validate_stock_symbol(potential_symbol):
+                    return potential_symbol
         
         return None
+
+    def _validate_stock_symbol(self, symbol: str) -> bool:
+        """Validate if a stock symbol exists and has data available"""
+        try:
+            import yfinance as yf
+            ticker = yf.Ticker(symbol)
+            # Try to get basic info - if it fails, symbol doesn't exist
+            info = ticker.info
+            # Check if we got meaningful data (not just empty dict)
+            return info and ('symbol' in info or 'shortName' in info or 'longName' in info)
+        except Exception:
+            return False
     
     def _analyze_research_text_only(self, research_data: str) -> str:
         """Analyze research data when no symbol is available"""
