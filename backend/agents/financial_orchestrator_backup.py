@@ -25,8 +25,8 @@ class FinancialOrchestrator:
             model_name=config.OPENAI_MODEL,
             temperature=config.AGENT_TEMPERATURE,
             api_key=self.openai_api_key,
-            max_tokens=getattr(config, 'MAX_TOKENS', 4000),  # Use configurable max tokens
-            request_timeout=getattr(config, 'TIMEOUT_SECONDS', 30)
+            max_tokens=getattr(config, 'MAX_TOKENS', 16000),  # Use configurable max tokens
+            request_timeout=getattr(config, 'TIMEOUT_SECONDS', 60)
         )
         
         # Initialize memory
@@ -297,6 +297,170 @@ Thought:{agent_scratchpad}"""
 
         ---
         **Report Date:** July 21, 2025 | **Validity:** 90 days | **Analyst:** Multi-Agent Financial Analysis System
+        """
+        
+        try:
+            comprehensive_report = self._call_llm(report_prompt)
+            return comprehensive_report
+        except Exception as e:
+            return f"Error generating comprehensive report: {str(e)}\n\nFallback Summary:\n{research}\n\n{analysis}\n\n{recommendations}"
+        **Revenue Performance:**
+        - Current Revenue: $XX.X billion
+        - 3-Year Revenue CAGR: X.X%
+        - Revenue Growth Trend: [Accelerating/Stable/Decelerating]
+        - Key Revenue Drivers: [List top 2-3 with impact]
+
+        **Profitability Metrics:**
+        - Gross Margin: XX.X% (vs industry XX.X%)
+        - Operating Margin: XX.X% (trend: +/-X.X% over 3 years)
+        - Net Margin: XX.X%
+        - Return on Equity: XX.X%
+        - Return on Invested Capital: XX.X%
+
+        ### Balance Sheet & Capital Structure
+        **Financial Strength:**
+        - Total Debt: $XX.X billion
+        - Cash Position: $XX.X billion
+        - Debt-to-Equity: X.XX (vs industry X.XX)
+        - Current Ratio: X.XX
+        - Interest Coverage: XX.X times
+
+        **Working Capital Management:**
+        - Cash Conversion Cycle: XX days
+        - Days Sales Outstanding: XX days
+        - Asset Turnover: X.XX times
+
+        ### Cash Flow Analysis
+        **Operating Cash Flow:** $XX.X billion (+/-X.X% YoY)
+        **Free Cash Flow:** $XX.X billion (FCF Margin: XX.X%)
+        **Capex as % of Revenue:** X.X%
+        **Cash Flow Quality Score:** X/10
+
+        ## VALUATION ANALYSIS
+
+        ### Current Valuation Metrics
+        - **P/E Ratio (TTM):** XX.X vs sector median XX.X
+        - **Forward P/E:** XX.X vs 5-year average XX.X
+        - **EV/EBITDA:** XX.X vs peers XX.X
+        - **Price-to-Book:** X.XX vs historical X.XX
+        - **Price-to-Sales:** X.XX
+
+        ### Fair Value Assessment
+        **DCF Model:** $XXX.XX per share
+        - WACC: X.X% | Terminal Growth: X.X%
+        - 5-Year FCF Growth: X.X%
+
+        **Comparable Analysis:** $XXX.XX per share
+        - Based on XX.X P/E multiple (peer median)
+        - EV/EBITDA XX.X applied to 2024E EBITDA
+
+        **Weighted Fair Value:** $XXX.XX per share
+        **Current Price:** $XXX.XX | **Upside/Downside:** +/-XX.X%
+
+        ## COMPETITIVE ANALYSIS
+
+        ### Market Position
+        - **Market Share:** XX.X% (Rank #X in industry)
+        - **Competitive Moat:** [Wide/Narrow/None] - [Justification]
+        - **Key Differentiators:** [List 2-3 competitive advantages]
+
+        ### Peer Comparison
+        | Metric | Company | Peer 1 | Peer 2 | Industry |
+        |--------|---------|--------|--------|----------|
+        | P/E Ratio | XX.X | XX.X | XX.X | XX.X |
+        | ROE | XX.X% | XX.X% | XX.X% | XX.X% |
+        | Debt/Equity | X.XX | X.XX | X.XX | X.XX |
+        | Revenue Growth | X.X% | X.X% | X.X% | X.X% |
+
+        ## INVESTMENT RISKS & OPPORTUNITIES
+
+        ### Key Investment Risks
+        1. **[Risk Category]** (Probability: High/Medium/Low)
+           - Impact: [Quantified downside potential]
+           - Mitigation: [How company/investors can address]
+
+        2. **[Risk Category]** (Probability: High/Medium/Low)
+           - Impact: [Quantified downside potential]
+           - Mitigation: [How company/investors can address]
+
+        3. **[Risk Category]** (Probability: High/Medium/Low)
+           - Impact: [Quantified downside potential]
+           - Mitigation: [How company/investors can address]
+
+        ### Upside Catalysts
+        - **[Catalyst 1]:** Expected impact +X.X% on stock price
+        - **[Catalyst 2]:** Timeline [X quarters], potential value creation $XX.X billion
+        - **[Catalyst 3]:** Market opportunity worth $XX.X billion
+
+        ## INVESTMENT RECOMMENDATION
+
+        ### Recommendation Details
+        **Rating:** [STRONG BUY/BUY/HOLD/SELL/STRONG SELL]
+        **Price Target:** $XXX.XX (XX.X% upside/downside)
+        **Investment Horizon:** [Short/Medium/Long-term]
+        **Risk Level:** [Low/Moderate/High]
+
+        ### Position Sizing Guidance
+        - **Conservative Portfolio:** X.X% allocation
+        - **Balanced Portfolio:** X.X% allocation  
+        - **Aggressive Portfolio:** X.X% allocation
+        - **Maximum Recommended Position:** X.X%
+
+        ### Entry Strategy
+        - **Optimal Entry:** $XXX.XX - $XXX.XX range
+        - **Dollar-Cost Average:** Over XX weeks/months
+        - **Stop-Loss Level:** $XXX.XX (-XX.X% from entry)
+
+        ### Key Monitoring Metrics
+        1. **Quarterly Revenue Growth:** Target >X.X%
+        2. **Operating Margin:** Monitor for XX.X% threshold
+        3. **Free Cash Flow:** Track vs $XX.X billion annually
+        4. **Debt/Equity Ratio:** Alert if exceeds X.XX
+
+        ## SCENARIO ANALYSIS
+
+        ### Bull Case (+XX% probability) - Price Target: $XXX.XX
+        - Revenue growth accelerates to XX.X%
+        - Margins expand by XXX basis points
+        - Multiple re-rating to XX.X P/E
+        - **Expected Return:** +XX.X%
+
+        ### Base Case (+XX% probability) - Price Target: $XXX.XX
+        - Revenue grows XX.X% annually
+        - Stable margins around XX.X%
+        - P/E remains at XX.X
+        - **Expected Return:** +/-X.X%
+
+        ### Bear Case (+XX% probability) - Price Target: $XXX.XX
+        - Revenue growth slows to X.X%
+        - Margin pressure to XX.X%
+        - Multiple contracts to XX.X P/E
+        - **Expected Return:** -XX.X%
+
+        ## CONCLUSION & NEXT STEPS
+
+        **Overall Assessment:** [Summary of investment attractiveness with key quantitative support]
+
+        **Action Items for Investors:**
+        1. [Specific recommended action with timeline]
+        2. [Monitoring or research recommendation]
+        3. [Portfolio construction consideration]
+
+        **Report Validity:** This analysis is valid for XX days from report date, subject to material changes in company fundamentals or market conditions.
+
+        ---
+
+        **IMPORTANT DISCLAIMERS:**
+        - This report is for informational and educational purposes only
+        - Not personalized investment advice - consult a financial advisor
+        - Past performance does not guarantee future results
+        - All investments carry risk of loss
+        - Model assumptions and targets subject to change
+        - Analyst may have positions in securities discussed
+
+        **Report Generated:** [Date] | **Analyst:** Multi-Agent Financial Analysis System | **Version:** 1.0
+
+        Focus on including realistic financial metrics, detailed calculations, and comprehensive quantitative analysis throughout the report.
         """
         
         try:

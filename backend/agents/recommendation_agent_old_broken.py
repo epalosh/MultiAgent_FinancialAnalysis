@@ -243,6 +243,98 @@ class RecommendationAgent:
             
         except Exception as e:
             return f"Recommendation Agent error: {str(e)}"
+            - Correlation with economic cycles: XX%
+            - Currency exposure: XX% of revenue from international operations
+
+            **ESG Risk:** [High/Medium/Low]
+            - Environmental compliance costs: $XX million annually
+            - Social/governance controversies: [None/Minor/Major]
+            - Regulatory risk score: X/10
+
+            ### Risk Mitigation Strategies
+            1. **Position Sizing:** Limit to X.X% of portfolio to manage concentration risk
+            2. **Hedging Options:** Consider [put options/collar strategies] for downside protection
+            3. **Stop-Loss Levels:** Set at $XXX.XX (-XX.X% from entry) with trailing stops
+            4. **Diversification:** Pair with [defensive sectors/uncorrelated assets]
+
+            ## MONITORING & REBALANCING FRAMEWORK
+
+            ### Key Performance Indicators (Quarterly Review)
+            **Financial Metrics:**
+            - Revenue Growth: Target XX.X% ± X.X%
+            - Operating Margin: Monitor for XX.X% threshold
+            - Free Cash Flow: Track vs $XX.X billion annual target
+            - Debt/Equity Ratio: Alert if exceeds X.XX
+
+            **Market Metrics:**
+            - Relative Performance vs [Sector ETF]: Target +/-X.X%
+            - P/E Ratio: Rebalance if trades >XX.X or <XX.X
+            - Technical Levels: Support at $XXX, Resistance at $XXX
+
+            ### Rebalancing Triggers
+            **Increase Position (+XX% to target weight):**
+            - Stock declines >XX% without fundamental deterioration
+            - Beats earnings estimates by >X% for 2 consecutive quarters
+            - Announces [specific positive catalyst]
+
+            **Reduce Position (-XX% from target weight):**
+            - Reaches $XXX.XX price target (+XX% upside achieved)
+            - Fundamentals deteriorate: [specific metrics below threshold]
+            - Sector rotation or macro headwinds emerge
+
+            **Exit Position (Full Sale):**
+            - Falls below $XXX.XX (-XX% stop-loss triggered)
+            - Fundamental thesis breaks: [specific scenario]
+            - Better opportunities identified with >XX% expected returns
+
+            ## ALTERNATIVE INVESTMENT CONSIDERATIONS
+
+            ### Direct Alternatives
+            1. **[Competitor Company]**: Similar exposure, better valuation at XX.X P/E
+            2. **[Sector ETF]**: Diversified exposure, lower risk, X.X% expense ratio
+            3. **[Value/Growth Alternative]**: Different style exposure, XX.X% expected return
+
+            ### Complementary Holdings
+            - **Defensive Pair**: [Utility/Consumer Staple] to reduce portfolio volatility
+            - **Growth Accelerator**: [Tech/Innovation stock] for higher risk-adjusted returns
+            - **International Hedge**: [Foreign market exposure] for currency/geographic diversification
+
+            ## ANALYST CONFIDENCE & METHODOLOGY
+
+            ### Recommendation Track Record
+            - 12-Month Hit Rate: XX% of price targets achieved
+            - Average Return of Similar Recommendations: +X.X%
+            - Risk-Adjusted Performance: X.X Sharpe Ratio
+
+            ### Model Assumptions & Sensitivities
+            **Key Model Inputs:**
+            - Revenue Growth Rate: X.X% (±X.X% sensitivity analysis)
+            - Terminal P/E Multiple: XX.X (±X.X range tested)
+            - Discount Rate: X.X% (±XX basis points impact)
+
+            **Scenario Analysis:**
+            - +/-10% revenue growth = $XX.XX price impact
+            - +/-100bps margin change = $XX.XX price impact
+            - +/-2.0x P/E multiple = $XX.XX price impact
+
+            ---
+            **IMPORTANT DISCLAIMERS:**
+            - This analysis is for informational purposes only and not personalized investment advice
+            - Past performance does not guarantee future results
+            - All investments carry risk of loss
+            - Consider your individual financial situation, risk tolerance, and investment objectives
+            - Consult with a qualified financial advisor before making investment decisions
+            - Model assumptions and price targets are subject to change based on new information
+
+            **ANALYST CERTIFICATION:** This recommendation represents the analyst's best professional judgment based on available information and standard financial analysis methodologies.
+            """
+            
+            result = self._call_llm(prompt)
+            
+            return f"{result}"
+            
+        except Exception as e:
+            return f"Recommendation Agent error: {str(e)}"
     
     def assess_risk_level(self, company_data: Dict[str, Any]) -> str:
         """
