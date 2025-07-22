@@ -503,14 +503,13 @@ body {
   text-align: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #eee;
 }
 
 .report-header h2 {
   font-size: 2rem;
   font-weight: 400;
   color: #333;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .report-metadata {
@@ -542,7 +541,6 @@ body {
   margin-top: 2rem;
   text-align: center;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
 }
 
 .trace-steps {
@@ -550,7 +548,6 @@ body {
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 4px;
-  border-left: 4px solid #333;
 }
 
 .trace-steps h4 {
@@ -675,7 +672,6 @@ body {
 .detailed-trace {
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #eee;
 }
 
 .trace-detail {
@@ -709,7 +705,6 @@ body {
   background: white;
   padding: 1rem;
   border-radius: 4px;
-  border: 1px solid #e9ecef;
 }
 
 .process-status {
@@ -736,8 +731,7 @@ body {
 
 .report-section {
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
 }
 
 .report-section:last-child {
@@ -750,7 +744,7 @@ body {
   font-weight: 500;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #333;
+  border-bottom: 1px solid #ddd;
 }
 
 .report-section h4 {
@@ -765,7 +759,6 @@ body {
   border-radius: 4px;
   padding: 1rem;
   margin-bottom: 1rem;
-  border-left: 4px solid #333;
 }
 
 .report-section ul {
@@ -776,4 +769,88 @@ body {
 .report-section li {
   margin-bottom: 0.5rem;
   color: #333;
+}
+
+/* Formatted Content Styles */
+.formatted-content {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.7;
+  color: #333;
+}
+
+.formatted-content h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #333;
+}
+
+.formatted-content h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+  margin: 1.5rem 0 0.75rem 0;
+  padding-bottom: 0.25rem;
+}
+
+.formatted-content h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #444;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.formatted-content p {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.formatted-content strong {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.formatted-content em {
+  font-style: italic;
+  color: #555;
+}
+
+.formatted-content ul, .formatted-content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.formatted-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* Step output specific formatting */
+.step-output .formatted-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Report content specific formatting */
+.report-content .formatted-content {
+  font-size: 1rem;
+}
+
+.report-content .formatted-content h1 {
+  font-size: 1.6rem;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.report-content .formatted-content h2 {
+  font-size: 1.4rem;
+  margin: 1.25rem 0 0.75rem 0;
+}
+
+.report-content .formatted-content h3 {
+  font-size: 1.2rem;
+  margin: 1rem 0 0.5rem 0;
 }

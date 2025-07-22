@@ -17,6 +17,34 @@ const App = () => {
 
   const [selectedStep, setSelectedStep] = useState(null);
 
+  // Format text with markdown-like formatting for modal display
+  const formatText = (text) => {
+    if (!text || typeof text !== 'string') return text;
+
+    // Convert markdown-style formatting to HTML
+    let formatted = text
+      // Headers
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      // Bold text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/__(.*?)__/g, '<strong>$1</strong>')
+      // Italic text
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      // Line breaks
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br/>');
+
+    // Wrap in paragraphs if not already wrapped
+    if (!formatted.includes('<h') && !formatted.includes('<p>')) {
+      formatted = '<p>' + formatted + '</p>';
+    }
+
+    return formatted;
+  };
+
   const handleQuerySubmit = async (query) => {
     setAnalysisState({
       isRunning: true,
@@ -242,7 +270,10 @@ const App = () => {
               {selectedStep.output && (
                 <div className="step-output">
                   <h4>Agent Output:</h4>
-                  <pre>{selectedStep.output}</pre>
+                  <div 
+                    className="formatted-content"
+                    dangerouslySetInnerHTML={{ __html: formatText(selectedStep.output) }}
+                  />
                 </div>
               )}
               {selectedStep.error && (

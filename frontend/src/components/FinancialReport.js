@@ -16,10 +16,53 @@ const FinancialReport = ({ report, query, steps, onNewAnalysis }) => {
     return steps.filter(step => step.status === 'completed');
   };
 
+  // Format text with markdown-like formatting
+  const formatText = (text) => {
+    if (!text || typeof text !== 'string') return text;
+
+    // Convert markdown-style formatting to HTML
+    let formatted = text
+      // Headers
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      // Bold text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/__(.*?)__/g, '<strong>$1</strong>')
+      // Italic text
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      // Line breaks
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br/>');
+
+    // Wrap in paragraphs if not already wrapped
+    if (!formatted.includes('<h') && !formatted.includes('<p>')) {
+      formatted = '<p>' + formatted + '</p>';
+    }
+
+    return formatted;
+  };
+
+  // Component to render formatted text
+  const FormattedText = ({ children }) => {
+    if (typeof children !== 'string') {
+      return <pre>{JSON.stringify(children, null, 2)}</pre>;
+    }
+
+    const formattedText = formatText(children);
+    return (
+      <div 
+        className="formatted-content"
+        dangerouslySetInnerHTML={{ __html: formattedText }}
+      />
+    );
+  };
+
   // Handle both string and object report formats
   const renderReport = () => {
     if (typeof report === 'string') {
-      return <pre>{report}</pre>;
+      return <FormattedText>{report}</FormattedText>;
     }
     
     if (typeof report === 'object' && report !== null) {
@@ -36,7 +79,9 @@ const FinancialReport = ({ report, query, steps, onNewAnalysis }) => {
           {report.analysis && (
             <div className="report-section">
               <h3>Financial Analysis</h3>
-              <pre>{typeof report.analysis === 'string' ? report.analysis : JSON.stringify(report.analysis, null, 2)}</pre>
+              <FormattedText>
+                {typeof report.analysis === 'string' ? report.analysis : JSON.stringify(report.analysis, null, 2)}
+              </FormattedText>
             </div>
           )}
           
@@ -46,11 +91,15 @@ const FinancialReport = ({ report, query, steps, onNewAnalysis }) => {
               {Array.isArray(report.report_sections) ? (
                 report.report_sections.map((section, index) => (
                   <div key={index} className="report-subsection">
-                    <pre>{typeof section === 'string' ? section : JSON.stringify(section, null, 2)}</pre>
+                    <FormattedText>
+                      {typeof section === 'string' ? section : JSON.stringify(section, null, 2)}
+                    </FormattedText>
                   </div>
                 ))
               ) : (
-                <pre>{typeof report.report_sections === 'string' ? report.report_sections : JSON.stringify(report.report_sections, null, 2)}</pre>
+                <FormattedText>
+                  {typeof report.report_sections === 'string' ? report.report_sections : JSON.stringify(report.report_sections, null, 2)}
+                </FormattedText>
               )}
             </div>
           )}
