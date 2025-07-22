@@ -220,25 +220,6 @@ body {
   transform: translateY(-2px);
 }
 
-.flow-step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 50px;
-  right: -50px;
-  width: 100px;
-  height: 2px;
-  background: #ddd;
-  z-index: 1;
-}
-
-.flow-step.completed:not(:last-child)::after {
-  background: #28a745;
-}
-
-.flow-step.running:not(:last-child)::after {
-  background: linear-gradient(90deg, #28a745 50%, #ddd 50%);
-}
-
 .step-card {
   background: white;
   border: 2px solid #ddd;
