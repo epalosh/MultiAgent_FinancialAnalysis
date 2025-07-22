@@ -154,52 +154,59 @@ function App() {
   const renderMessage = (message) => {
     if (!message || !message.message) return null;
     
-    return (message.message || '').split('\\n').map((line, index) => {
+    return (message.message || '').split('\n').map((line, index) => {
       // Handle empty lines
       if (line.trim() === '') {
         return <br key={index} />;
       }
       
+      // Handle special section headers (like "FULL RESEARCH OUTPUT:")
+      if (line.includes('FULL RESEARCH OUTPUT:') || line.includes('FULL ANALYSIS OUTPUT:') || line.includes('FULL RECOMMENDATIONS OUTPUT:')) {
+        return <h3 key={index} className="message-section-header">{line}</h3>;
+      }
+      
       // Handle bullet points
       if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
-        const bulletText = line.replace(/^[- •]\\s*/, '');
-        return (
-          <div key={index} style={{ marginLeft: '1rem', marginBottom: '0.5rem' }}>
-            <span style={{ color: 'var(--accent-primary)', marginRight: '0.5rem' }}>•</span>
-            {bulletText}
-          </div>
-        );
+        const bulletText = line.replace(/^[- •]\s*/, '');
+        return <div key={index} className="message-bullet">• {bulletText}</div>;
       }
       
       // Handle numbered points
-      if (/^\\d+\\.\\s/.test(line.trim())) {
-        return (
-          <div key={index} style={{ marginLeft: '1rem', marginBottom: '0.5rem' }}>
-            {line}
-          </div>
-        );
+      if (/^\d+\.\s/.test(line.trim())) {
+        return <div key={index} className="message-numbered">{line}</div>;
       }
       
       // Handle headers
       if (line.startsWith('### ')) {
-        return <h3 key={index} style={{ color: 'var(--text-primary)', margin: '1rem 0 0.5rem 0', fontWeight: '600' }}>{line.substring(4)}</h3>;
+        return <h4 key={index} className="message-h4">{line.substring(4)}</h4>;
       }
       if (line.startsWith('## ')) {
-        return <h2 key={index} style={{ color: 'var(--accent-primary)', margin: '1.5rem 0 0.75rem 0', fontWeight: '600' }}>{line.substring(3)}</h2>;
+        return <h3 key={index} className="message-h3">{line.substring(3)}</h3>;
       }
       if (line.startsWith('# ')) {
-        return <h1 key={index} style={{ color: 'var(--text-primary)', margin: '1.5rem 0 0.75rem 0', fontWeight: '600', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>{line.substring(2)}</h1>;
+        return <h2 key={index} className="message-h2">{line.substring(2)}</h2>;
       }
       
-      // Handle bold text
-      const boldText = line.replace(/\\*\\*(.*?)\\*\\*/g, '<strong style="color: var(--text-primary); font-weight: 600;">$1</strong>');
+      // Handle success indicators
+      if (line.includes('✅') || line.includes('completed successfully')) {
+        const formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return <div key={index} className="message-success" dangerouslySetInnerHTML={{__html: formattedLine}}></div>;
+      }
+      
+      // Handle important notices
+      if (line.includes('IMPORTANT:') || line.includes('WARNING:') || line.includes('NOTE:')) {
+        const formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return <div key={index} className="message-important" dangerouslySetInnerHTML={{__html: formattedLine}}></div>;
+      }
+      
+      // Handle bold and italic formatting
+      const formattedLine = line
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>');
       
       // Regular paragraphs
-      return (
-        <p key={index} style={{ marginBottom: '0.75rem', lineHeight: '1.7' }} 
-           dangerouslySetInnerHTML={{__html: boldText}}>
-        </p>
-      );
+      return <div key={index} className="message-paragraph" dangerouslySetInnerHTML={{__html: formattedLine}}></div>;
     });
   };
 
@@ -215,61 +222,198 @@ function App() {
         content = finalResult;
       } else if (finalResult.error) {
         return (
-          <div className="report-text">
-            <p className="error-message">Analysis Error: {finalResult.error}</p>
+          <div className="professional-report-error">
+            <h2>Analysis Error</h2>
+            <p className="error-message">{finalResult.error}</p>
             <details>
-              <summary>Debug Information</summary>
+              <summary>Technical Details</summary>
               <pre>{JSON.stringify(finalResult, null, 2)}</pre>
             </details>
           </div>
         );
       } else {
         return (
-          <div className="report-text">
-            <p>No analysis content available</p>
-            <details>
-              <summary>Debug Information</summary>
-              <pre>{JSON.stringify(finalResult, null, 2)}</pre>
-            </details>
+          <div className="professional-report-error">
+            <h2>No Analysis Available</h2>
+            <p>The analysis could not be completed. Please try again.</p>
           </div>
         );
       }
 
+      // Parse the content into structured sections
+      const lines = content.split('\n');
+      const sections = [];
+      let currentSection = { title: '', content: [], level: 0 };
+      
+      lines.forEach((line, index) => {
+        const trimmedLine = line.trim();
+        
+        if (trimmedLine === '') {
+          if (currentSection.content.length > 0) {
+            currentSection.content.push({ type: 'break' });
+          }
+          return;
+        }
+        
+        // Detect headers
+        if (trimmedLine.startsWith('# ')) {
+          if (currentSection.title || currentSection.content.length > 0) {
+            sections.push(currentSection);
+          }
+          currentSection = { title: trimmedLine.substring(2), content: [], level: 1 };
+        } else if (trimmedLine.startsWith('## ')) {
+          if (currentSection.title || currentSection.content.length > 0) {
+            sections.push(currentSection);
+          }
+          currentSection = { title: trimmedLine.substring(3), content: [], level: 2 };
+        } else if (trimmedLine.startsWith('### ')) {
+          if (currentSection.title || currentSection.content.length > 0) {
+            sections.push(currentSection);
+          }
+          currentSection = { title: trimmedLine.substring(4), content: [], level: 3 };
+        } else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('• ')) {
+          currentSection.content.push({ 
+            type: 'bullet', 
+            content: trimmedLine.substring(2).trim() 
+          });
+        } else if (/^\d+\.\s/.test(trimmedLine)) {
+          currentSection.content.push({ 
+            type: 'numbered', 
+            content: trimmedLine 
+          });
+        } else {
+          currentSection.content.push({ 
+            type: 'paragraph', 
+            content: trimmedLine 
+          });
+        }
+      });
+      
+      // Add the last section
+      if (currentSection.title || currentSection.content.length > 0) {
+        sections.push(currentSection);
+      }
+
       return (
-        <div className="report-text">
-          {content.split('\\n').map((line, index) => {
-            // Handle markdown-style headers
-            if (line.startsWith('# ')) {
-              return <h1 key={index} className="report-h1">{line.substring(2)}</h1>;
-            }
-            if (line.startsWith('## ')) {
-              return <h2 key={index} className="report-h2">{line.substring(3)}</h2>;
-            }
-            if (line.startsWith('### ')) {
-              return <h3 key={index} className="report-h3">{line.substring(4)}</h3>;
-            }
-            // Handle bullet points
-            if (line.trim().startsWith('- ')) {
-              return <li key={index} className="report-bullet">{line.substring(2)}</li>;
-            }
-            // Handle empty lines
-            if (line.trim() === '') {
-              return <br key={index} />;
-            }
-            // Handle bold text
-            const boldText = line.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
-            // Regular paragraphs
-            return <p key={index} className="report-paragraph" dangerouslySetInnerHTML={{__html: boldText}}></p>;
-          })}
+        <div className="professional-report-container">
+          {/* Executive Summary Header */}
+          <div className="report-header-section">
+            <div className="report-title-page">
+              <h1 className="report-main-title">Financial Analysis Report</h1>
+              <div className="report-subtitle">Professional Multi-Agent Investment Analysis</div>
+              <div className="report-meta">
+                <div className="report-date">
+                  <strong>Date:</strong> {new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </div>
+                <div className="report-query">
+                  <strong>Query:</strong> {query}
+                </div>
+                <div className="report-agents">
+                  <strong>Analysis Team:</strong> Research Agent, Financial Analysis Agent, Recommendation Agent
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Table of Contents */}
+          <div className="report-toc">
+            <h2 className="toc-title">Table of Contents</h2>
+            <div className="toc-list">
+              {sections.map((section, index) => (
+                <div key={index} className={`toc-item toc-level-${section.level}`}>
+                  <span className="toc-number">{index + 1}.</span>
+                  <span className="toc-text">{section.title}</span>
+                  <span className="toc-dots"></span>
+                  <span className="toc-page">{index + 1}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Report Sections */}
+          <div className="report-content">
+            {sections.map((section, sectionIndex) => (
+              <div key={sectionIndex} className="report-section">
+                {section.title && (
+                  <h2 className={`report-section-title level-${section.level}`}>
+                    <span className="section-number">{sectionIndex + 1}.</span>
+                    {section.title}
+                  </h2>
+                )}
+                
+                <div className="report-section-content">
+                  {section.content.map((item, itemIndex) => {
+                    switch (item.type) {
+                      case 'break':
+                        return <div key={itemIndex} className="report-break"></div>;
+                      
+                      case 'bullet':
+                        return (
+                          <div key={itemIndex} className="report-bullet-item">
+                            <span className="bullet-marker">•</span>
+                            <span className="bullet-content" 
+                                  dangerouslySetInnerHTML={{
+                                    __html: item.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                  }}>
+                            </span>
+                          </div>
+                        );
+                      
+                      case 'numbered':
+                        return (
+                          <div key={itemIndex} className="report-numbered-item">
+                            <span dangerouslySetInnerHTML={{
+                              __html: item.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            }}></span>
+                          </div>
+                        );
+                      
+                      case 'paragraph':
+                      default:
+                        const formattedContent = item.content
+                          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                          .replace(/`(.*?)`/g, '<code>$1</code>');
+                        
+                        return (
+                          <p key={itemIndex} className="report-paragraph"
+                             dangerouslySetInnerHTML={{ __html: formattedContent }}>
+                          </p>
+                        );
+                    }
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Report Footer */}
+          <div className="report-footer">
+            <div className="footer-line"></div>
+            <div className="footer-content">
+              <div className="footer-left">
+                <strong>Multi-Agent Financial Analysis System</strong>
+              </div>
+              <div className="footer-right">
+                Generated on {new Date().toLocaleString()}
+              </div>
+            </div>
+          </div>
         </div>
       );
     } catch (renderError) {
       return (
-        <div className="report-text">
-          <p className="error-message">Error rendering report: {renderError.message}</p>
+        <div className="professional-report-error">
+          <h2>Report Rendering Error</h2>
+          <p>Unable to format the financial analysis report.</p>
           <details>
-            <summary>Debug Information</summary>
-            <pre>finalResult: {JSON.stringify(finalResult, null, 2)}</pre>
+            <summary>Technical Details</summary>
+            <pre>{renderError.message}</pre>
           </details>
         </div>
       );
@@ -398,7 +542,7 @@ function App() {
                 )}
               </div>
             </div>
-            <div className="result-content professional-report">
+            <div className="result-content">
               {renderFinalResult()}
             </div>
             
