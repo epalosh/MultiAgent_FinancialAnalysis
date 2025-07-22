@@ -174,13 +174,6 @@ class ResearchAgent:
             
         except Exception as e:
             return f"Research Agent error: {str(e)}"
-            
-            result = self._call_llm(prompt)
-            
-            return f"{result}"
-            
-        except Exception as e:
-            return f"Research Agent error: {str(e)}"
     
     def get_market_data(self, symbol: str) -> str:
         """

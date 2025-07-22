@@ -19,20 +19,22 @@ def research_agent():
         data = request.get_json()
         query = data.get('query', '')
         
-        logger.info(f"Research agent request: {query}")
+        logger.info(f"🔍 Research agent request: {query}")
         
         # Get research agent output directly
         result = orchestrator.research_agent.research_company(query)
         
-        # Return the full detailed research output for the discourse
+        logger.info(f"✅ Research completed - {len(result)} characters generated")
+        
         return jsonify({
             'success': True,
-            'result': f"✅ Research phase completed successfully. Generated comprehensive research report with detailed financial data, competitive analysis, and market intelligence.\n\nFULL RESEARCH OUTPUT:\n{result}",
-            'agent': 'Research Agent'
+            'result': result,
+            'agent': 'Research Agent',
+            'output_length': len(result)
         })
         
     except Exception as e:
-        logger.error(f"Error in research agent: {str(e)}")
+        logger.error(f"❌ Error in research agent: {str(e)}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -43,21 +45,25 @@ def analysis_agent():
     try:
         data = request.get_json()
         query = data.get('query', '')
+        context = data.get('context', '')  # Previous agent outputs for context
         
-        logger.info(f"Analysis agent request: {query}")
+        logger.info(f"📊 Analysis agent request: {query}")
         
-        # Get analysis agent output directly
-        result = orchestrator.analysis_agent.analyze_data(query)
+        # Get analysis agent output with context
+        full_input = f"{query}\n\nContext from previous analysis:\n{context}" if context else query
+        result = orchestrator.analysis_agent.analyze_data(full_input)
         
-        # Return the full detailed analysis output for the discourse
+        logger.info(f"✅ Analysis completed - {len(result)} characters generated")
+        
         return jsonify({
             'success': True,
-            'result': f"✅ Financial analysis completed successfully. Generated comprehensive financial analysis with detailed calculations, ratio analysis, and risk assessment.\n\nFULL ANALYSIS OUTPUT:\n{result}",
-            'agent': 'Analysis Agent'
+            'result': result,
+            'agent': 'Analysis Agent',
+            'output_length': len(result)
         })
         
     except Exception as e:
-        logger.error(f"Error in analysis agent: {str(e)}")
+        logger.error(f"❌ Error in analysis agent: {str(e)}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -68,21 +74,25 @@ def recommendation_agent():
     try:
         data = request.get_json()
         query = data.get('query', '')
+        context = data.get('context', '')  # Previous agent outputs for context
         
-        logger.info(f"Recommendation agent request: {query}")
+        logger.info(f"💡 Recommendation agent request: {query}")
         
-        # Get recommendation agent output directly
-        result = orchestrator.recommendation_agent.generate_recommendation(query)
+        # Get recommendation agent output with full context
+        full_input = f"{query}\n\nContext from previous analysis:\n{context}" if context else query
+        result = orchestrator.recommendation_agent.generate_recommendation(full_input)
         
-        # Return the full detailed recommendations output for the discourse
+        logger.info(f"✅ Recommendations completed - {len(result)} characters generated")
+        
         return jsonify({
             'success': True,
-            'result': f"✅ Investment strategy formulation completed successfully. Generated comprehensive investment recommendations with detailed analysis and actionable insights.\n\nFULL RECOMMENDATIONS OUTPUT:\n{result}",
-            'agent': 'Recommendation Agent'
+            'result': result,
+            'agent': 'Recommendation Agent',
+            'output_length': len(result)
         })
         
     except Exception as e:
-        logger.error(f"Error in recommendation agent: {str(e)}")
+        logger.error(f"❌ Error in recommendation agent: {str(e)}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -99,18 +109,57 @@ def analyze_financial_data():
         query = data['query']
         company = data.get('company', '')
         
-        logger.info(f"Received analysis request for query: {query}")
+        logger.info(f"🚀 Starting comprehensive financial analysis for: {query}")
         
-        # Run the multi-agent analysis
+        # Run the multi-agent analysis with extended processing
         result = orchestrator.orchestrate_analysis(query, company)
+        
+        if result.get('success', True):  # Default to True if not specified for backward compatibility
+            logger.info(f"✅ Analysis completed successfully - Generated {result.get('total_length', 'unknown')} characters")
+            return jsonify({
+                'success': True,
+                'result': result
+            })
+        else:
+            logger.error(f"❌ Analysis failed: {result.get('error', 'Unknown error')}")
+            return jsonify({
+                'success': False,
+                'error': result.get('error', 'Analysis failed')
+            }), 500
+        
+    except Exception as e:
+        logger.error(f"❌ Critical error in analysis: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/generate-report', methods=['POST'])
+def generate_comprehensive_report():
+    try:
+        data = request.get_json()
+        query = data.get('query', '')
+        research = data.get('research', '')
+        analysis = data.get('analysis', '')
+        recommendations = data.get('recommendations', '')
+        
+        logger.info(f"📋 Generating comprehensive report for: {query}")
+        
+        # Generate comprehensive integrated report using the orchestrator
+        comprehensive_report = orchestrator._generate_comprehensive_report(
+            query, research, analysis, recommendations
+        )
+        
+        logger.info(f"✅ Comprehensive report generated - {len(comprehensive_report)} characters")
         
         return jsonify({
             'success': True,
-            'result': result
+            'comprehensive_report': comprehensive_report,
+            'report_length': len(comprehensive_report)
         })
         
     except Exception as e:
-        logger.error(f"Error in analysis: {str(e)}")
+        logger.error(f"❌ Error generating comprehensive report: {str(e)}")
         return jsonify({
             'success': False,
             'error': str(e)

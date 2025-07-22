@@ -4,6 +4,7 @@ import QueryForm from './components/QueryForm';
 import AgentFlowChart from './components/AgentFlowChart';
 import FinancialReport from './components/FinancialReport';
 import LoadingSpinner from './components/LoadingSpinner';
+import AgentOutputModal from './components/AgentOutputModal';
 
 const App = () => {
   const [analysisState, setAnalysisState] = useState({
@@ -16,6 +17,7 @@ const App = () => {
   });
 
   const [selectedStep, setSelectedStep] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   // Format text with markdown-like formatting for modal display
   const formatText = (text) => {
@@ -102,20 +104,18 @@ const App = () => {
   };
 
   const runFullAnalysisWithProgress = async (query) => {
-    // Start the full analysis
-    const analysisPromise = fetch('/api/analyze', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    });
+    const agentEndpoints = [
+      { id: 'research', endpoint: '/api/agents/research', name: 'Research Agent' },
+      { id: 'analysis', endpoint: '/api/agents/analysis', name: 'Analysis Agent' },
+      { id: 'recommendation', endpoint: '/api/agents/recommendation', name: 'Recommendation Agent' }
+    ];
 
-    // Simulate progress through the steps
-    const steps = ['research', 'analysis', 'recommendation'];
-    const stepDurations = [3000, 4000, 3000]; // Simulated durations in ms
+    let cumulativeContext = '';
+    const agentOutputs = {};
 
-    for (let i = 0; i < steps.length; i++) {
+    for (let i = 0; i < agentEndpoints.length; i++) {
+      const agent = agentEndpoints[i];
+      
       // Update step to running
       setAnalysisState(prev => ({
         ...prev,
@@ -127,59 +127,181 @@ const App = () => {
         )
       }));
 
-      // Wait for simulated duration
-      await new Promise(resolve => setTimeout(resolve, stepDurations[i]));
+      try {
+        // Call the specific agent endpoint
+        const response = await fetch(agent.endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            query: query,
+            context: cumulativeContext 
+          }),
+        });
 
-      // Update step to completed
-      setAnalysisState(prev => ({
-        ...prev,
-        steps: prev.steps.map((step, idx) => 
-          idx === i 
-            ? { 
-                ...step, 
-                status: 'completed', 
-                output: `${step.name} completed successfully. Detailed output will be available in the final report.`,
-                endTime: new Date()
-              }
-            : step
-        )
-      }));
+        if (!response.ok) {
+          throw new Error(`Agent ${agent.name} failed: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Store the full agent output
+          agentOutputs[agent.id] = result.result;
+          cumulativeContext += `\n\n=== ${agent.name} Output ===\n${result.result}`;
+
+          // Update step to completed with full output
+          setAnalysisState(prev => ({
+            ...prev,
+            steps: prev.steps.map((step, idx) => 
+              idx === i 
+                ? { 
+                    ...step, 
+                    status: 'completed', 
+                    output: result.result,  // Store the FULL agent output
+                    endTime: new Date(),
+                    outputLength: result.output_length || result.result.length
+                  }
+                : step
+            )
+          }));
+        } else {
+          throw new Error(result.error || `${agent.name} failed`);
+        }
+
+      } catch (error) {
+        // Update step to failed
+        setAnalysisState(prev => ({
+          ...prev,
+          steps: prev.steps.map((step, idx) => 
+            idx === i 
+              ? { 
+                  ...step, 
+                  status: 'failed', 
+                  output: `Error: ${error.message}`,
+                  endTime: new Date()
+                }
+              : step
+          )
+        }));
+        throw error;
+      }
     }
 
-    // Show final report generation
+    // Generate final comprehensive report by calling the orchestrator
     setAnalysisState(prev => ({
       ...prev,
-      currentStep: steps.length
+      currentStep: agentEndpoints.length
     }));
 
     try {
-      const response = await analysisPromise;
+      // Generate comprehensive integrated report
+      const reportResponse = await fetch('/api/generate-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          query: query,
+          research: agentOutputs.research,
+          analysis: agentOutputs.analysis,
+          recommendations: agentOutputs.recommendation
+        }),
+      });
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!reportResponse.ok) {
+        throw new Error(`Report generation failed: ${reportResponse.status}`);
       }
 
-      const result = await response.json();
+      const reportResult = await reportResponse.json();
 
-      if (result.success) {
+      if (reportResult.success) {
         setAnalysisState(prev => ({
           ...prev,
           isRunning: false,
-          finalReport: result.result
+          finalReport: reportResult.comprehensive_report,
+          agentOutputs: agentOutputs  // Store all individual agent outputs
         }));
       } else {
-        throw new Error(result.error || 'Analysis failed');
+        // Fallback to simple combination if comprehensive report fails
+        const fallbackReport = `
+# COMPREHENSIVE FINANCIAL ANALYSIS REPORT
+
+## EXECUTIVE SUMMARY
+This report synthesizes outputs from our multi-agent financial analysis system.
+
+---
+
+## 🔍 RESEARCH FINDINGS
+${agentOutputs.research || 'Research data not available'}
+
+---
+
+## 📊 FINANCIAL ANALYSIS  
+${agentOutputs.analysis || 'Analysis data not available'}
+
+---
+
+## 💡 INVESTMENT RECOMMENDATIONS
+${agentOutputs.recommendation || 'Recommendations not available'}
+
+---
+**Report Generated:** ${new Date().toLocaleString()}
+        `;
+        
+        setAnalysisState(prev => ({
+          ...prev,
+          isRunning: false,
+          finalReport: fallbackReport,
+          agentOutputs: agentOutputs
+        }));
       }
     } catch (error) {
-      throw error;
+      console.error('Report generation error:', error);
+      // Fallback to simple combination if there's an error
+      const fallbackReport = `
+# COMPREHENSIVE FINANCIAL ANALYSIS REPORT
+
+## EXECUTIVE SUMMARY
+This report synthesizes outputs from our multi-agent financial analysis system.
+
+---
+
+## 🔍 RESEARCH FINDINGS
+${agentOutputs.research || 'Research data not available'}
+
+---
+
+## 📊 FINANCIAL ANALYSIS
+${agentOutputs.analysis || 'Analysis data not available'}
+
+---
+
+## 💡 INVESTMENT RECOMMENDATIONS
+${agentOutputs.recommendation || 'Recommendations not available'}
+
+---
+**Report Generated:** ${new Date().toLocaleString()}
+**Note:** Comprehensive report generation encountered an issue, displaying individual agent outputs.
+      `;
+      
+      setAnalysisState(prev => ({
+        ...prev,
+        isRunning: false,
+        finalReport: fallbackReport,
+        agentOutputs: agentOutputs
+      }));
     }
   };
 
   const handleStepClick = (step) => {
     setSelectedStep(step);
+    setShowModal(true);
   };
 
   const handleCloseModal = () => {
+    setShowModal(false);
     setSelectedStep(null);
   };
 
@@ -193,6 +315,7 @@ const App = () => {
       error: null
     });
     setSelectedStep(null);
+    setShowModal(false);
   };
 
   return (
@@ -249,43 +372,11 @@ const App = () => {
         )}
       </main>
 
-      {selectedStep && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{selectedStep.name}</h3>
-              <button className="modal-close" onClick={handleCloseModal}>×</button>
-            </div>
-            <div className="modal-body">
-              <div className="step-info">
-                <p><strong>Description:</strong> {selectedStep.description}</p>
-                <p><strong>Status:</strong> <span className={`status ${selectedStep.status}`}>{selectedStep.status}</span></p>
-                {selectedStep.startTime && (
-                  <p><strong>Started:</strong> {selectedStep.startTime.toLocaleTimeString()}</p>
-                )}
-                {selectedStep.endTime && (
-                  <p><strong>Completed:</strong> {selectedStep.endTime.toLocaleTimeString()}</p>
-                )}
-              </div>
-              {selectedStep.output && (
-                <div className="step-output">
-                  <h4>Agent Output:</h4>
-                  <div 
-                    className="formatted-content"
-                    dangerouslySetInnerHTML={{ __html: formatText(selectedStep.output) }}
-                  />
-                </div>
-              )}
-              {selectedStep.error && (
-                <div className="step-error">
-                  <h4>Error:</h4>
-                  <p>{selectedStep.error}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <AgentOutputModal 
+        step={selectedStep}
+        isOpen={showModal}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

@@ -20,13 +20,13 @@ class FinancialOrchestrator:
         # Configuration from config.py
         self.openai_api_key = config.OPENAI_API_KEY
         
-        # Initialize LLM with higher token limits
+        # Initialize LLM with higher token limits and longer timeout
         self.llm = ChatOpenAI(
             model_name=config.OPENAI_MODEL,
             temperature=config.AGENT_TEMPERATURE,
             api_key=self.openai_api_key,
-            max_tokens=getattr(config, 'MAX_TOKENS', 4000),  # Use configurable max tokens
-            request_timeout=getattr(config, 'TIMEOUT_SECONDS', 30)
+            max_tokens=getattr(config, 'MAX_TOKENS', 8000),  # Use configurable max tokens
+            request_timeout=getattr(config, 'TIMEOUT_SECONDS', 120)  # Longer timeout for comprehensive analysis
         )
         
         # Initialize memory
@@ -125,21 +125,31 @@ Thought:{agent_scratchpad}"""
         Main orchestration method that coordinates multiple agents to produce a comprehensive report
         """
         try:
-            # Step 1: Research Phase
-            research_findings = self.research_agent.research_company(query)
+            print(f"🚀 Starting comprehensive financial analysis for: {query}")
             
-            # Step 2: Analysis Phase
+            # Step 1: Research Phase
+            print("📊 Phase 1: Gathering comprehensive financial research...")
+            research_findings = self.research_agent.research_company(query)
+            print(f"✅ Research completed - {len(research_findings)} characters generated")
+            
+            # Step 2: Analysis Phase  
+            print("🔍 Phase 2: Performing detailed financial analysis...")
             analysis_results = self.analysis_agent.analyze_data(query + "\n\nResearch Context:\n" + research_findings)
+            print(f"✅ Analysis completed - {len(analysis_results)} characters generated")
             
             # Step 3: Recommendations Phase
+            print("💡 Phase 3: Generating investment recommendations...")
             recommendations = self.recommendation_agent.generate_recommendation(
                 query + "\n\nResearch Context:\n" + research_findings + "\n\nAnalysis Results:\n" + analysis_results
             )
+            print(f"✅ Recommendations completed - {len(recommendations)} characters generated")
             
             # Step 4: Generate comprehensive professional report
+            print("📋 Phase 4: Compiling comprehensive financial report...")
             comprehensive_report = self._generate_comprehensive_report(
                 query, research_findings, analysis_results, recommendations
             )
+            print(f"✅ Final report generated - {len(comprehensive_report)} characters")
             
             return {
                 'query': query,
@@ -151,15 +161,19 @@ Thought:{agent_scratchpad}"""
                     'research': research_findings,
                     'analysis': analysis_results,
                     'recommendations': recommendations
-                }
+                },
+                'success': True,
+                'total_length': len(comprehensive_report)
             }
             
         except Exception as e:
+            print(f"❌ Error in orchestration: {str(e)}")
             return {
                 'query': query,
                 'company': company,
                 'error': str(e),
-                'timestamp': self._get_timestamp()
+                'timestamp': self._get_timestamp(),
+                'success': False
             }
     
     def _generate_comprehensive_report(self, query: str, research: str, analysis: str, recommendations: str) -> str:

@@ -23,6 +23,217 @@ class AnalysisAgent:
     
     def analyze_data(self, data: str) -> str:
         """
+        Perform comprehensive financial analysis with detailed calculations
+        """
+        try:
+            prompt = f"""
+            Perform comprehensive quantitative financial analysis on: {data}
+            
+            Generate a detailed professional financial analysis report with CALCULATIONS and METRICS:
+
+            # COMPREHENSIVE FINANCIAL ANALYSIS REPORT
+
+            ## FINANCIAL RATIO ANALYSIS
+
+            ### Liquidity Analysis
+            **Short-term Financial Health:**
+            - Current Ratio = Current Assets ÷ Current Liabilities = X.XX
+            - Quick Ratio = (Current Assets - Inventory) ÷ Current Liabilities = X.XX
+            - Cash Ratio = Cash ÷ Current Liabilities = X.XX
+            - Working Capital = Current Assets - Current Liabilities = $XX.X billion
+            - Operating Cash Flow Ratio = Operating CF ÷ Current Liabilities = X.XX
+
+            **Liquidity Assessment:** [Excellent/Good/Adequate/Poor] - Company can [easily/adequately/with difficulty] meet short-term obligations
+
+            ### Profitability Analysis
+            **Margin Analysis:**
+            - Gross Profit Margin = (Revenue - COGS) ÷ Revenue = XX.X%
+            - Operating Margin = Operating Income ÷ Revenue = XX.X%
+            - EBITDA Margin = EBITDA ÷ Revenue = XX.X%
+            - Net Profit Margin = Net Income ÷ Revenue = XX.X%
+            - Free Cash Flow Margin = Free CF ÷ Revenue = XX.X%
+
+            **Return Metrics:**
+            - ROE = Net Income ÷ Shareholders' Equity = XX.X%
+            - ROA = Net Income ÷ Total Assets = XX.X%
+            - ROIC = NOPAT ÷ Invested Capital = XX.X%
+            - ROI = (Gain - Cost) ÷ Cost = XX.X%
+
+            **Profitability Trend:** [Improving/Stable/Declining] - [3-year trend analysis]
+
+            ### Leverage & Capital Structure
+            **Debt Analysis:**
+            - Debt-to-Equity = Total Debt ÷ Total Equity = X.XX
+            - Debt-to-Assets = Total Debt ÷ Total Assets = XX.X%
+            - Equity Multiplier = Total Assets ÷ Total Equity = X.XX
+            - Capitalization Ratio = Total Debt ÷ (Total Debt + Equity) = XX.X%
+
+            **Coverage Ratios:**
+            - Interest Coverage = EBIT ÷ Interest Expense = XX.X times
+            - Debt Service Coverage = Operating CF ÷ Total Debt Service = X.XX
+            - Fixed Charge Coverage = (EBIT + Lease) ÷ (Interest + Lease) = X.XX
+
+            **Leverage Assessment:** [Conservative/Moderate/Aggressive] - Debt levels are [appropriate/concerning] for industry
+
+            ### Efficiency Analysis
+            **Asset Utilization:**
+            - Asset Turnover = Revenue ÷ Average Total Assets = X.XX times
+            - Inventory Turnover = COGS ÷ Average Inventory = XX.X times
+            - Receivables Turnover = Revenue ÷ Average AR = XX.X times
+            - Fixed Asset Turnover = Revenue ÷ Average Fixed Assets = X.XX times
+
+            **Working Capital Management:**
+            - Days Sales Outstanding (DSO) = (AR ÷ Revenue) × 365 = XX days
+            - Days Inventory Outstanding (DIO) = (Inventory ÷ COGS) × 365 = XX days
+            - Days Payable Outstanding (DPO) = (AP ÷ COGS) × 365 = XX days
+            - Cash Conversion Cycle = DSO + DIO - DPO = XX days
+
+            ## VALUATION ANALYSIS
+
+            ### Market-Based Valuation
+            **Price Multiples:**
+            - P/E Ratio (TTM) = Stock Price ÷ EPS = XX.X
+            - Forward P/E = Stock Price ÷ Forward EPS = XX.X
+            - PEG Ratio = P/E ÷ EPS Growth Rate = X.XX
+            - Price-to-Book = Stock Price ÷ Book Value per Share = X.XX
+            - Price-to-Sales = Market Cap ÷ Revenue = X.XX
+            - EV/EBITDA = Enterprise Value ÷ EBITDA = XX.X
+
+            **Relative Valuation vs Industry:**
+            - P/E Premium/Discount to Sector: +/-XX.X%
+            - EV/EBITDA vs Peers: [Higher/Lower/In-line]
+            - Valuation Justification: [Growth/Quality/Risk factors]
+
+            ### Intrinsic Value Analysis
+            **DCF Model Assumptions:**
+            - WACC (Weighted Average Cost of Capital): X.X%
+            - Terminal Growth Rate: X.X%
+            - Free Cash Flow Growth (5-year): X.X%
+            - Beta: X.XX
+            - Risk-Free Rate: X.X%
+            - Market Risk Premium: X.X%
+
+            **Fair Value Estimate:** $XXX.XX per share
+            **Current Price:** $XXX.XX per share
+            **Upside/Downside:** +/-XX.X%
+
+            ## FINANCIAL PERFORMANCE TRENDS
+
+            ### 5-Year Historical Analysis
+            **Revenue Growth:**
+            - 2024E: $XX.X billion (+X.X% YoY)
+            - 2023: $XX.X billion (+X.X% YoY)
+            - 2022: $XX.X billion (+X.X% YoY)
+            - 2021: $XX.X billion (+X.X% YoY)
+            - 2020: $XX.X billion (+X.X% YoY)
+            - 5-Year CAGR: X.X%
+
+            **Earnings Growth:**
+            - EPS CAGR (5-year): X.X%
+            - Earnings Quality Score: X/10
+            - Consistency of Earnings: [High/Medium/Low]
+
+            ### Cash Flow Analysis
+            **Operating Cash Flow:**
+            - OCF Growth (5-year CAGR): X.X%
+            - OCF/Net Income Ratio: X.XX (Quality indicator)
+            - Capex as % of Revenue: X.X%
+            - Free Cash Flow: $XX.X billion
+            - FCF Yield: X.X%
+
+            ## COMPARATIVE ANALYSIS
+
+            ### Peer Group Comparison
+            **Key Competitors Analysis:**
+            [Company A]: P/E XX.X, ROE XX.X%, Debt/Equity X.XX
+            [Company B]: P/E XX.X, ROE XX.X%, Debt/Equity X.XX
+            [Company C]: P/E XX.X, ROE XX.X%, Debt/Equity X.XX
+            **Subject Company:** P/E XX.X, ROE XX.X%, Debt/Equity X.XX
+
+            **Relative Positioning:** [Leader/Follower/Laggard] in [profitability/efficiency/growth]
+
+            ## RISK ASSESSMENT MATRIX
+
+            ### Quantitative Risk Metrics
+            - Beta (5-year): X.XX (vs market 1.00)
+            - Volatility (1-year): XX.X%
+            - Maximum Drawdown: -XX.X%
+            - Sharpe Ratio: X.XX
+            - Altman Z-Score: X.XX ([Safe/Grey Zone/Distress])
+
+            ### Financial Risk Factors
+            1. **Credit Risk:** [Low/Medium/High] - [Debt sustainability analysis]
+            2. **Liquidity Risk:** [Low/Medium/High] - [Cash position adequacy]  
+            3. **Operational Risk:** [Low/Medium/High] - [Business model stability]
+            4. **Market Risk:** [Low/Medium/High] - [Cyclical sensitivity]
+
+            ## INVESTMENT THESIS SUMMARY
+
+            ### Quantitative Scorecard (1-10 Scale)
+            - **Profitability:** X/10 - [Strong/Adequate/Weak margins and returns]
+            - **Growth:** X/10 - [Accelerating/Stable/Decelerating trends]
+            - **Financial Strength:** X/10 - [Conservative/Balanced/Leveraged structure]
+            - **Valuation:** X/10 - [Undervalued/Fair/Overvalued relative to fundamentals]
+            - **Quality:** X/10 - [High/Medium/Low business quality]
+
+            **Overall Financial Health Score:** XX/50
+
+            ### Key Investment Highlights
+            1. [Quantitative strength/weakness #1 with supporting data]
+            2. [Quantitative strength/weakness #2 with supporting data]  
+            3. [Quantitative strength/weakness #3 with supporting data]
+
+            ### Critical Metrics to Monitor
+            - [Metric 1]: Current XX.X%, Target range XX-XX%
+            - [Metric 2]: Current $XX.X billion, Trend [improving/stable/concerning]
+            - [Metric 3]: Current XX.X%, vs peer average XX.X%
+
+            CALCULATION METHODOLOGY: Use standard financial formulas and provide step-by-step calculations where relevant. All metrics should reflect realistic financial data for the analyzed company/sector.
+
+            DATA INTEGRITY: Ensure all numbers are internally consistent (balance sheet balances, ratio calculations align, etc.).
+            """
+            
+            result = self._call_llm(prompt)
+            
+            return f"{result}"
+            
+        except Exception as e:
+            return f"Analysis Agent error: {str(e)}"
+    
+    def calculate_ratios(self, financial_data: Dict[str, Any]) -> Dict[str, float]:
+        """
+        Calculate key financial ratios
+        """
+        try:
+            ratios = {}
+            
+            # Basic ratio calculations (these would use real data in production)
+            if 'current_assets' in financial_data and 'current_liabilities' in financial_data:
+                ratios['current_ratio'] = financial_data['current_assets'] / financial_data['current_liabilities']
+            
+            if 'total_debt' in financial_data and 'total_equity' in financial_data:
+                ratios['debt_to_equity'] = financial_data['total_debt'] / financial_data['total_equity']
+            
+            return ratios
+            
+        except Exception as e:
+            return {"error": str(e)}
+    
+    def _call_llm(self, prompt: str) -> str:
+        """Helper method to call the LLM with proper format"""
+        try:
+            # Check if it's ChatOpenAI (has message-based interface)
+            if hasattr(self.llm, 'predict_messages') or 'Chat' in str(type(self.llm)):
+                response = self.llm.invoke([HumanMessage(content=prompt)])
+                return response.content if hasattr(response, 'content') else str(response)
+            else:
+                # Fallback for other LLM types
+                return self.llm.invoke(prompt)
+        except Exception as e:
+            return f"LLM call failed: {str(e)}"
+    
+    def analyze_data(self, data: str) -> str:
+        """
         Perform comprehensive financial analysis with detailed calculations and proper table formatting
         """
         try:
@@ -185,7 +396,7 @@ class AnalysisAgent:
             
             result = self._call_llm(prompt)
             
-            return f"📊 COMPREHENSIVE FINANCIAL ANALYSIS:\n\n{result}"
+            return f"� COMPREHENSIVE FINANCIAL ANALYSIS:\n\n{result}"
             
         except Exception as e:
             return f"Analysis Agent error: {str(e)}"
@@ -194,20 +405,13 @@ class AnalysisAgent:
         """
         Calculate key financial ratios
         """
-        try:
-            ratios = {}
-            
-            # Example ratio calculations (would be more comprehensive in real implementation)
-            if 'current_assets' in financial_data and 'current_liabilities' in financial_data:
-                ratios['current_ratio'] = financial_data['current_assets'] / financial_data['current_liabilities']
-            
-            if 'net_income' in financial_data and 'revenue' in financial_data:
-                ratios['profit_margin'] = financial_data['net_income'] / financial_data['revenue']
-            
-            if 'total_debt' in financial_data and 'total_equity' in financial_data:
-                ratios['debt_to_equity'] = financial_data['total_debt'] / financial_data['total_equity']
-            
-            return ratios
-            
-        except Exception as e:
-            return {"error": str(e)}
+        ratios = {}
+        
+        # Example ratio calculations (would be more comprehensive in real implementation)
+        if 'current_assets' in financial_data and 'current_liabilities' in financial_data:
+            ratios['current_ratio'] = financial_data['current_assets'] / financial_data['current_liabilities']
+        
+        if 'net_income' in financial_data and 'revenue' in financial_data:
+            ratios['profit_margin'] = financial_data['net_income'] / financial_data['revenue']
+        
+        return ratios
