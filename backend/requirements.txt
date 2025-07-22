@@ -5,3 +5,12 @@ langchain-openai
 openai
 python-dotenv
 requests
+yfinance
+pandas
+numpy
+beautifulsoup4
+sec-edgar-api
+fredapi
+lxml
+aiohttp
+asyncio

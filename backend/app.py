@@ -134,6 +134,143 @@ def analyze_financial_data():
             'error': str(e)
         }), 500
 
+@app.route('/api/analyze-enhanced', methods=['POST'])
+def analyze_financial_data_enhanced():
+    try:
+        data = request.get_json()
+        
+        if not data or 'query' not in data:
+            return jsonify({'error': 'Query is required'}), 400
+        
+        query = data['query']
+        company = data.get('company', '')
+        
+        logger.info(f"🚀 Starting ENHANCED financial analysis with REAL data for: {query}")
+        
+        # Run the enhanced multi-agent analysis with real data
+        result = orchestrator.orchestrate_enhanced_analysis(query, company)
+        
+        if result.get('success', True):
+            logger.info(f"✅ Enhanced analysis completed successfully - Generated {result.get('total_length', 'unknown')} characters")
+            return jsonify({
+                'success': True,
+                'result': result,
+                'data_sources': result.get('data_sources', []),
+                'enhanced': True
+            })
+        else:
+            logger.error(f"❌ Enhanced analysis failed: {result.get('error', 'Unknown error')}")
+            return jsonify({
+                'success': False,
+                'error': result.get('error', 'Enhanced analysis failed')
+            }), 500
+        
+    except Exception as e:
+        logger.error(f"❌ Critical error in enhanced analysis: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/quick-analysis', methods=['POST'])
+def quick_stock_analysis():
+    try:
+        data = request.get_json()
+        
+        if not data or 'symbol' not in data:
+            return jsonify({'error': 'Stock symbol is required'}), 400
+        
+        symbol = data['symbol'].upper()
+        
+        logger.info(f"🔍 Quick analysis for: {symbol}")
+        
+        # Get quick analysis using enhanced research agent
+        result = orchestrator.enhanced_research_agent.get_quick_analysis(symbol)
+        
+        logger.info(f"✅ Quick analysis completed for {symbol}")
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'symbol': symbol,
+            'analysis_type': 'quick'
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Error in quick analysis: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/compare-stocks', methods=['POST'])
+def compare_stocks():
+    try:
+        data = request.get_json()
+        
+        if not data or 'symbols' not in data:
+            return jsonify({'error': 'Stock symbols are required'}), 400
+        
+        symbols = data['symbols']
+        if isinstance(symbols, str):
+            symbols = [s.strip().upper() for s in symbols.split(',')]
+        elif isinstance(symbols, list):
+            symbols = [s.strip().upper() for s in symbols]
+        else:
+            return jsonify({'error': 'Invalid symbols format'}), 400
+        
+        logger.info(f"📊 Comparing stocks: {symbols}")
+        
+        # Get comparison analysis using enhanced analysis agent
+        result = orchestrator.enhanced_analysis_agent.compare_stocks(symbols)
+        
+        logger.info(f"✅ Stock comparison completed for {len(symbols)} stocks")
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'symbols': symbols,
+            'analysis_type': 'comparison'
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Error in stock comparison: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/market-data', methods=['POST'])
+def get_market_data():
+    try:
+        data = request.get_json()
+        
+        if not data or 'symbol' not in data:
+            return jsonify({'error': 'Stock symbol is required'}), 400
+        
+        symbol = data['symbol'].upper()
+        
+        logger.info(f"📈 Getting market data for: {symbol}")
+        
+        # Get real-time market data
+        result = orchestrator.enhanced_research_agent.get_market_data(symbol)
+        
+        logger.info(f"✅ Market data retrieved for {symbol}")
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'symbol': symbol,
+            'data_type': 'market_data'
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Error getting market data: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/api/generate-report', methods=['POST'])
 def generate_comprehensive_report():
     try:

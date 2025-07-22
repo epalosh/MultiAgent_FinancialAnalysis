@@ -10,6 +10,8 @@ import os
 from .research_agent import ResearchAgent
 from .analysis_agent import AnalysisAgent
 from .recommendation_agent import RecommendationAgent
+from .enhanced_research_agent import EnhancedResearchAgent
+from .enhanced_analysis_agent import EnhancedAnalysisAgent
 
 # Import configuration
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
@@ -39,6 +41,10 @@ class FinancialOrchestrator:
         self.research_agent = ResearchAgent(self.llm)
         self.analysis_agent = AnalysisAgent(self.llm)
         self.recommendation_agent = RecommendationAgent(self.llm)
+        
+        # Initialize enhanced agents with real data capabilities
+        self.enhanced_research_agent = EnhancedResearchAgent(self.llm)
+        self.enhanced_analysis_agent = EnhancedAnalysisAgent(self.llm)
         
         # Create tools for the orchestrator
         self.tools = self._create_tools()
@@ -108,9 +114,34 @@ Thought:{agent_scratchpad}"""
                 func=self.research_agent.research_company
             ),
             Tool(
+                name="Enhanced_Research_Company",
+                description="Research comprehensive financial information using REAL market data. Use this for detailed fundamental analysis with live data from Yahoo Finance and other sources.",
+                func=self.enhanced_research_agent.research_company
+            ),
+            Tool(
                 name="Analyze_Financial_Data",
                 description="Analyze financial data and perform calculations. Use this for ratio analysis, trend analysis, and financial health assessment.",
                 func=self.analysis_agent.analyze_data
+            ),
+            Tool(
+                name="Enhanced_Financial_Analysis",
+                description="Perform comprehensive financial analysis using REAL market data with advanced calculations, risk metrics, and quantitative scoring.",
+                func=self.enhanced_analysis_agent.analyze_financial_data
+            ),
+            Tool(
+                name="Compare_Multiple_Stocks",
+                description="Compare multiple stocks side-by-side using real financial data. Provide stock symbols separated by commas.",
+                func=lambda symbols: self.enhanced_analysis_agent.compare_stocks(symbols.split(','))
+            ),
+            Tool(
+                name="Quick_Stock_Analysis",
+                description="Get quick fundamental and technical analysis for a single stock symbol.",
+                func=self.enhanced_research_agent.get_quick_analysis
+            ),
+            Tool(
+                name="Real_Time_Market_Data",
+                description="Get real-time market data, price performance, and trading metrics for a stock.",
+                func=self.enhanced_research_agent.get_market_data
             ),
             Tool(
                 name="Generate_Recommendations",
@@ -168,6 +199,63 @@ Thought:{agent_scratchpad}"""
             
         except Exception as e:
             print(f"❌ Error in orchestration: {str(e)}")
+            return {
+                'query': query,
+                'company': company,
+                'error': str(e),
+                'timestamp': self._get_timestamp(),
+                'success': False
+            }
+    
+    def orchestrate_enhanced_analysis(self, query: str, company: str = "") -> Dict[str, Any]:
+        """
+        Enhanced orchestration method using real financial data from multiple sources
+        """
+        try:
+            print(f"🚀 Starting ENHANCED financial analysis with REAL data for: {query}")
+            
+            # Step 1: Enhanced Research Phase with Real Data
+            print("📊 Phase 1: Gathering REAL financial data from live sources...")
+            research_findings = self.enhanced_research_agent.research_company(query)
+            print(f"✅ Enhanced research completed - {len(research_findings)} characters generated")
+            
+            # Step 2: Enhanced Analysis Phase with Real Data
+            print("🔍 Phase 2: Performing quantitative analysis with real market data...")
+            analysis_results = self.enhanced_analysis_agent.analyze_financial_data(research_findings)
+            print(f"✅ Enhanced analysis completed - {len(analysis_results)} characters generated")
+            
+            # Step 3: Recommendations Phase (using enhanced data)
+            print("💡 Phase 3: Generating data-driven investment recommendations...")
+            recommendations = self.recommendation_agent.generate_recommendation(
+                query + "\n\nEnhanced Research with Real Data:\n" + research_findings + "\n\nQuantitative Analysis Results:\n" + analysis_results
+            )
+            print(f"✅ Recommendations completed - {len(recommendations)} characters generated")
+            
+            # Step 4: Generate enhanced comprehensive report
+            print("📋 Phase 4: Compiling enhanced financial report with real data...")
+            comprehensive_report = self._generate_enhanced_comprehensive_report(
+                query, research_findings, analysis_results, recommendations
+            )
+            print(f"✅ Enhanced final report generated - {len(comprehensive_report)} characters")
+            
+            return {
+                'query': query,
+                'company': company,
+                'analysis': comprehensive_report,
+                'agents_used': ['Enhanced Research Agent (Real Data)', 'Enhanced Analysis Agent', 'Recommendation Agent'],
+                'timestamp': self._get_timestamp(),
+                'report_sections': {
+                    'research': research_findings,
+                    'analysis': analysis_results,
+                    'recommendations': recommendations
+                },
+                'success': True,
+                'total_length': len(comprehensive_report),
+                'data_sources': ['Yahoo Finance', 'SEC EDGAR', 'Web Scraping', 'Market APIs']
+            }
+            
+        except Exception as e:
+            print(f"❌ Error in enhanced orchestration: {str(e)}")
             return {
                 'query': query,
                 'company': company,
@@ -318,6 +406,105 @@ Thought:{agent_scratchpad}"""
             return comprehensive_report
         except Exception as e:
             return f"Error generating comprehensive report: {str(e)}\n\nFallback Summary:\n{research}\n\n{analysis}\n\n{recommendations}"
+    
+    def _generate_enhanced_comprehensive_report(self, query: str, research: str, analysis: str, recommendations: str) -> str:
+        """
+        Generate an enhanced comprehensive financial report using real data
+        """
+        report_prompt = f"""
+        Create a professional, institutional-grade financial analysis report using the REAL MARKET DATA provided by the enhanced agents:
+
+        ORIGINAL QUERY: {query}
+        ENHANCED RESEARCH WITH REAL DATA: {research}
+        QUANTITATIVE ANALYSIS WITH REAL DATA: {analysis} 
+        INVESTMENT RECOMMENDATIONS: {recommendations}
+
+        CRITICAL REQUIREMENTS:
+        1. Use ONLY the REAL financial numbers provided - no placeholder values
+        2. All calculations must be based on the actual data provided
+        3. Create properly formatted markdown tables with real data
+        4. Provide specific, actionable investment guidance
+        5. Include risk warnings based on actual risk metrics
+        6. Reference data sources and timestamps
+
+        Generate a comprehensive report structured as follows:
+
+        # 📊 INSTITUTIONAL FINANCIAL ANALYSIS REPORT
+        **Real-Time Data Analysis | Live Market Sources**
+
+        ## 🎯 EXECUTIVE SUMMARY
+
+        **Investment Rating:** [Based on real investment score] | **Price Target:** $[Based on real valuation] | **Expected Return:** [Based on real calculations]
+        
+        **Real-Time Financial Snapshot:**
+        - Current Price: [Use actual price from data]
+        - Market Cap: [Use actual market cap]
+        - P/E Ratio: [Use actual P/E]
+        - 1-Year Return: [Use actual performance]
+        - Volatility: [Use actual volatility]
+        
+        **Investment Thesis:** [Based on real financial metrics and analysis]
+
+        ## 📈 REAL-TIME MARKET PERFORMANCE
+
+        ### Current Market Position
+        [Use actual price data, 52-week ranges, volume data]
+
+        ### Performance vs Benchmarks
+        [Use actual return comparisons with S&P 500, NASDAQ]
+
+        ## 💰 FUNDAMENTAL ANALYSIS (REAL DATA)
+
+        ### Valuation Metrics
+        [Use actual P/E, P/B, EV/EBITDA, PEG ratios from data]
+
+        ### Financial Health
+        [Use actual balance sheet metrics, ratios, cash position]
+
+        ### Profitability Analysis  
+        [Use actual margins, ROE, ROA from financial statements]
+
+        ## ⚠️ RISK ASSESSMENT (QUANTIFIED)
+
+        ### Risk Metrics (Real Data)
+        [Use actual beta, volatility, max drawdown, VaR]
+
+        ### Risk Factors
+        [List actual risk factors identified from analysis]
+
+        ## 🎯 INVESTMENT RECOMMENDATION
+
+        ### Quantitative Investment Score
+        [Use actual investment score from analysis]
+
+        ### Portfolio Allocation Guidance
+        [Use calculated portfolio weight recommendations]
+
+        ### Monitoring Strategy
+        [Specific metrics to track based on analysis]
+
+        ## 📊 DATA SOURCES & METHODOLOGY
+
+        **Data Sources:** Yahoo Finance APIs, SEC EDGAR, Live Market Data
+        **Data Timestamp:** [Use actual timestamp from data]
+        **Analysis Methodology:** Multi-factor quantitative analysis with real-time data
+        **Next Review Date:** [Recommendation for next analysis]
+
+        **Important Disclaimers:**
+        - Analysis based on real financial data as of report timestamp
+        - Past performance does not guarantee future results
+        - Consult financial advisor for personalized investment advice
+        - Market conditions can change rapidly
+
+        ---
+        *This report uses live financial data and institutional-grade analysis methodologies.*
+        """
+        
+        try:
+            enhanced_report = self._call_llm(report_prompt)
+            return enhanced_report
+        except Exception as e:
+            return f"Error generating enhanced report: {str(e)}\n\nFallback Enhanced Summary:\n{research}\n\n{analysis}\n\n{recommendations}"
     
     def get_agents_info(self) -> Dict[str, Any]:
         """Return information about available agents"""
