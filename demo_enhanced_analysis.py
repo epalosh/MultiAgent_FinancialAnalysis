@@ -83,7 +83,7 @@ def demo_enhanced_financial_analysis():
         print("  • Risk assessment using actual volatility")
         print("  • Investment scoring based on real fundamentals")
         
-        enhanced_result = orchestrator.orchestrate_enhanced_analysis("Tesla (TSLA)")
+        enhanced_result = orchestrator.orchestrate_analysis("Tesla (TSLA)")
         
         if enhanced_result.get('success'):
             print("✅ Enhanced analysis completed successfully!")

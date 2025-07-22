@@ -7,8 +7,6 @@ from typing import Dict, List, Any
 import json
 import sys
 import os
-from .research_agent import ResearchAgent
-from .analysis_agent import AnalysisAgent
 from .recommendation_agent import RecommendationAgent
 from .enhanced_research_agent import EnhancedResearchAgent
 from .enhanced_analysis_agent import EnhancedAnalysisAgent
@@ -37,14 +35,10 @@ class FinancialOrchestrator:
             return_messages=True
         )
         
-        # Initialize individual agents
-        self.research_agent = ResearchAgent(self.llm)
-        self.analysis_agent = AnalysisAgent(self.llm)
-        self.recommendation_agent = RecommendationAgent(self.llm)
-        
         # Initialize enhanced agents with real data capabilities
-        self.enhanced_research_agent = EnhancedResearchAgent(self.llm)
-        self.enhanced_analysis_agent = EnhancedAnalysisAgent(self.llm)
+        self.research_agent = EnhancedResearchAgent(self.llm)
+        self.analysis_agent = EnhancedAnalysisAgent(self.llm)
+        self.recommendation_agent = RecommendationAgent(self.llm)
         
         # Create tools for the orchestrator
         self.tools = self._create_tools()
@@ -110,38 +104,28 @@ Thought:{agent_scratchpad}"""
         tools = [
             Tool(
                 name="Research_Company",
-                description="Research financial information about a company. Use this for gathering basic company data, stock prices, and market information.",
+                description="Research comprehensive financial information using REAL market data. Use this for detailed fundamental analysis with live data from Yahoo Finance and other sources.",
                 func=self.research_agent.research_company
             ),
             Tool(
-                name="Enhanced_Research_Company",
-                description="Research comprehensive financial information using REAL market data. Use this for detailed fundamental analysis with live data from Yahoo Finance and other sources.",
-                func=self.enhanced_research_agent.research_company
-            ),
-            Tool(
                 name="Analyze_Financial_Data",
-                description="Analyze financial data and perform calculations. Use this for ratio analysis, trend analysis, and financial health assessment.",
-                func=self.analysis_agent.analyze_data
-            ),
-            Tool(
-                name="Enhanced_Financial_Analysis",
                 description="Perform comprehensive financial analysis using REAL market data with advanced calculations, risk metrics, and quantitative scoring.",
-                func=self.enhanced_analysis_agent.analyze_financial_data
+                func=self.analysis_agent.analyze_financial_data
             ),
             Tool(
                 name="Compare_Multiple_Stocks",
                 description="Compare multiple stocks side-by-side using real financial data. Provide stock symbols separated by commas.",
-                func=lambda symbols: self.enhanced_analysis_agent.compare_stocks(symbols.split(','))
+                func=lambda symbols: self.analysis_agent.compare_stocks(symbols.split(','))
             ),
             Tool(
                 name="Quick_Stock_Analysis",
                 description="Get quick fundamental and technical analysis for a single stock symbol.",
-                func=self.enhanced_research_agent.get_quick_analysis
+                func=self.research_agent.get_quick_analysis
             ),
             Tool(
                 name="Real_Time_Market_Data",
                 description="Get real-time market data, price performance, and trading metrics for a stock.",
-                func=self.enhanced_research_agent.get_market_data
+                func=self.research_agent.get_market_data
             ),
             Tool(
                 name="Generate_Recommendations",
@@ -153,75 +137,19 @@ Thought:{agent_scratchpad}"""
     
     def orchestrate_analysis(self, query: str, company: str = "") -> Dict[str, Any]:
         """
-        Main orchestration method that coordinates multiple agents to produce a comprehensive report
-        """
-        try:
-            print(f"🚀 Starting comprehensive financial analysis for: {query}")
-            
-            # Step 1: Research Phase
-            print("📊 Phase 1: Gathering comprehensive financial research...")
-            research_findings = self.research_agent.research_company(query)
-            print(f"✅ Research completed - {len(research_findings)} characters generated")
-            
-            # Step 2: Analysis Phase  
-            print("🔍 Phase 2: Performing detailed financial analysis...")
-            analysis_results = self.analysis_agent.analyze_data(query + "\n\nResearch Context:\n" + research_findings)
-            print(f"✅ Analysis completed - {len(analysis_results)} characters generated")
-            
-            # Step 3: Recommendations Phase
-            print("💡 Phase 3: Generating investment recommendations...")
-            recommendations = self.recommendation_agent.generate_recommendation(
-                query + "\n\nResearch Context:\n" + research_findings + "\n\nAnalysis Results:\n" + analysis_results
-            )
-            print(f"✅ Recommendations completed - {len(recommendations)} characters generated")
-            
-            # Step 4: Generate comprehensive professional report
-            print("📋 Phase 4: Compiling comprehensive financial report...")
-            comprehensive_report = self._generate_comprehensive_report(
-                query, research_findings, analysis_results, recommendations
-            )
-            print(f"✅ Final report generated - {len(comprehensive_report)} characters")
-            
-            return {
-                'query': query,
-                'company': company,
-                'analysis': comprehensive_report,
-                'agents_used': ['Research Agent', 'Analysis Agent', 'Recommendation Agent'],
-                'timestamp': self._get_timestamp(),
-                'report_sections': {
-                    'research': research_findings,
-                    'analysis': analysis_results,
-                    'recommendations': recommendations
-                },
-                'success': True,
-                'total_length': len(comprehensive_report)
-            }
-            
-        except Exception as e:
-            print(f"❌ Error in orchestration: {str(e)}")
-            return {
-                'query': query,
-                'company': company,
-                'error': str(e),
-                'timestamp': self._get_timestamp(),
-                'success': False
-            }
-    
-    def orchestrate_enhanced_analysis(self, query: str, company: str = "") -> Dict[str, Any]:
-        """
-        Enhanced orchestration method using real financial data from multiple sources
+        Main orchestration method using enhanced agents with real financial data
         """
         try:
             print(f"🚀 Starting ENHANCED financial analysis with REAL data for: {query}")
             
             # Step 1: Enhanced Research Phase with Real Data
             print("📊 Phase 1: Gathering REAL financial data from live sources...")
-            research_findings = self.enhanced_research_agent.research_company(query)
+            research_findings = self.research_agent.research_company(query)
             print(f"✅ Enhanced research completed - {len(research_findings)} characters generated")
             
             # Step 2: Enhanced Analysis Phase with Real Data
             print("🔍 Phase 2: Performing quantitative analysis with real market data...")
-            analysis_results = self.enhanced_analysis_agent.analyze_financial_data(research_findings)
+            analysis_results = self.analysis_agent.analyze_financial_data(research_findings)
             print(f"✅ Enhanced analysis completed - {len(analysis_results)} characters generated")
             
             # Step 3: Recommendations Phase (using enhanced data)
@@ -263,7 +191,15 @@ Thought:{agent_scratchpad}"""
                 'timestamp': self._get_timestamp(),
                 'success': False
             }
-    
+            print(f"❌ Error in orchestration: {str(e)}")
+            return {
+                'query': query,
+                'company': company,
+                'error': str(e),
+                'timestamp': self._get_timestamp(),
+                'success': False
+            }
+
     def _generate_comprehensive_report(self, query: str, research: str, analysis: str, recommendations: str) -> str:
         """
         Generate a comprehensive professional financial report that integrates all agent outputs

@@ -26,10 +26,10 @@ def test_agent_imports():
     """Test if agents can be imported"""
     try:
         from agents.financial_orchestrator import FinancialOrchestrator
-        from agents.research_agent import ResearchAgent
-        from agents.analysis_agent import AnalysisAgent
+        from agents.enhanced_research_agent import EnhancedResearchAgent
+        from agents.enhanced_analysis_agent import EnhancedAnalysisAgent
         from agents.recommendation_agent import RecommendationAgent
-        print("✅ All agent classes imported successfully")
+        print("✅ All enhanced agent classes imported successfully")
         return True
     except Exception as e:
         print(f"❌ Agent import error: {e}")

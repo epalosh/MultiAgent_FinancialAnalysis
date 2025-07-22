@@ -148,7 +148,7 @@ def analyze_financial_data_enhanced():
         logger.info(f"🚀 Starting ENHANCED financial analysis with REAL data for: {query}")
         
         # Run the enhanced multi-agent analysis with real data
-        result = orchestrator.orchestrate_enhanced_analysis(query, company)
+        result = orchestrator.orchestrate_analysis(query, company)
         
         if result.get('success', True):
             logger.info(f"✅ Enhanced analysis completed successfully - Generated {result.get('total_length', 'unknown')} characters")

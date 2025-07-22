@@ -107,7 +107,7 @@ def test_enhanced_orchestration():
         orchestrator = FinancialOrchestrator()
         
         query = "Tesla (TSLA)"
-        result = orchestrator.orchestrate_enhanced_analysis(query)
+        result = orchestrator.orchestrate_analysis(query)
         
         if result.get('success'):
             print(f"✅ Enhanced orchestration completed successfully")

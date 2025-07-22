@@ -55,6 +55,12 @@ class EnhancedAnalysisAgent:
         except Exception as e:
             return f"Enhanced Analysis Agent error: {str(e)}"
     
+    def analyze_data(self, data: str) -> str:
+        """
+        Legacy method name compatibility - delegates to analyze_financial_data
+        """
+        return self.analyze_financial_data(data)
+    
     def _extract_symbol_from_research(self, research_data: str) -> str:
         """Extract stock symbol from research data"""
         import re
