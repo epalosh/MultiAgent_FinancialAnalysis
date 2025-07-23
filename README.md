@@ -6,7 +6,7 @@ A financial analysis system that uses specialized AI agents to provide comprehen
 
 The system is built on LangChain and employs three specialized agents that work together to analyze financial data:
 
-### Enhanced Research Agent
+### Research Agent
 Gathers comprehensive financial information using real-time data sources:
 - Yahoo Finance API integration via yfinance
 - Real-time stock price and market data
@@ -14,7 +14,7 @@ Gathers comprehensive financial information using real-time data sources:
 - Financial statements and metrics
 - News and analyst data
 
-### Enhanced Analysis Agent
+### Analysis Agent
 Performs detailed financial analysis and calculations:
 - Advanced financial ratio calculations
 - Risk assessment and volatility analysis
