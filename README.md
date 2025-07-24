@@ -45,7 +45,7 @@ The system integrates multiple data sources for comprehensive analysis:
 - **Yahoo Finance API** - Real-time stock data, financials, and basic news
 - **yfinance Library** - Historical data and market metrics
 
-### Web Scraping Sources (NEW!)
+### Web Scraping Sources
 - **Finviz.com** - Advanced financial metrics, analyst recommendations, and ownership data
 - **MarketWatch** - Real-time financial news and market analysis
 - **Yahoo Finance (Extended)** - Additional news coverage and market insights
