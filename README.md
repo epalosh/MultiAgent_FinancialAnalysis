@@ -39,11 +39,28 @@ Coordinates the agents and manages the analysis workflow. Provides tools for:
 
 ## Data Sources
 
-The system integrates multiple free data sources:
-- Yahoo Finance for real-time stock data
-- Web scraping for additional market information
-- SEC EDGAR for regulatory filings
-- FRED for economic indicators
+The system integrates multiple data sources for comprehensive analysis:
+
+### Primary Data Sources
+- **Yahoo Finance API** - Real-time stock data, financials, and basic news
+- **yfinance Library** - Historical data and market metrics
+
+### Web Scraping Sources (NEW!)
+- **Finviz.com** - Advanced financial metrics, analyst recommendations, and ownership data
+- **MarketWatch** - Real-time financial news and market analysis
+- **Yahoo Finance (Extended)** - Additional news coverage and market insights
+- **SEC EDGAR** - Regulatory filings and corporate governance documents
+- **Insider Trading Data** - Corporate insider buy/sell activity tracking
+
+### Economic Data
+- **FRED (Federal Reserve Economic Data)** - Economic indicators and market context
+
+The web scraping infrastructure provides:
+- Enhanced financial metrics not available through APIs
+- Real-time news sentiment analysis
+- Regulatory filing monitoring
+- Insider trading activity tracking
+- Multi-source data validation
 
 ## Frontend
 
