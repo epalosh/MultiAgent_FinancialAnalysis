@@ -70,7 +70,7 @@ A React-based frontend built with AI assistance that provides an intuitive inter
 
 Users can analyze any publicly traded stock by entering the ticker symbol or company name. The system supports all major exchanges and provides comprehensive analysis with real-time data validation.
 
-## Additional Info:
+## Additional Information
 
 This project was built heavily with the use of AI to write code. In this project, my primary goal is functionality over form. Though unprofessional, it's scrappy and effective! I'm quite impressed with the final outcome.
 
