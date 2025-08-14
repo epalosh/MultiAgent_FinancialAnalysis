@@ -7,12 +7,10 @@ A financial analysis system that uses specialized AI agents to provide comprehen
 The system is built on LangChain and employs three specialized agents that work together to analyze financial data:
 
 ### Research Agent
-Gathers comprehensive financial information using real-time data sources:
-- Yahoo Finance API integration via yfinance
-- Real-time stock price and market data
+Gathers comprehensive financial information using "real-time" data sources:
+- Yahoo Finance API integration via yfinance (15 min delay)
 - Company fundamentals and business information
-- Financial statements and metrics
-- News and analyst data
+- News and public sentiment
 
 ### Analysis Agent
 Performs detailed financial analysis and calculations:
@@ -37,42 +35,13 @@ Coordinates the agents and manages the analysis workflow. Provides tools for:
 - Quick analysis for rapid insights
 - Real-time market data retrieval
 
-## Data Sources
-
-The system integrates multiple data sources for comprehensive analysis:
-
-### Primary Data Sources
-- **Yahoo Finance API** - Real-time stock data, financials, and basic news
-- **yfinance Library** - Historical data and market metrics
-
-### Web Scraping Sources
-- **Finviz.com** - Advanced financial metrics, analyst recommendations, and ownership data
-- **MarketWatch** - Real-time financial news and market analysis
-- **Yahoo Finance (Extended)** - Additional news coverage and market insights
-- **SEC EDGAR** - Regulatory filings and corporate governance documents
-- **Insider Trading Data** - Corporate insider buy/sell activity tracking
-
-### Economic Data
-- **FRED (Federal Reserve Economic Data)** - Economic indicators and market context
-
-The web scraping infrastructure provides:
-- Enhanced financial metrics not available through APIs
-- Real-time news sentiment analysis
-- Regulatory filing monitoring
-- Insider trading activity tracking
-- Multi-source data validation
-
-## Frontend
-
-A React-based frontend built with AI assistance that provides an intuitive interface for submitting analysis requests and viewing results.
-
 ## Usage
 
 Users can analyze any publicly traded stock by entering the ticker symbol or company name. The system supports all major exchanges and provides comprehensive analysis with real-time data validation.
 
 ## Additional Information
 
-This project was built heavily with the use of AI to write code. In this project, my primary goal is functionality over form. Though unprofessional, it's scrappy and effective! I'm quite impressed with the final outcome.
+This project was built heavily with AI. The primary goal is functionality over form. It's scrappy and effective! 
 
 ##  Quick Start
 
